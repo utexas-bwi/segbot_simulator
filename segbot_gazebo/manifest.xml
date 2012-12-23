@@ -1,0 +1,20 @@
+<package>
+  <description brief="bwi_gazebo">
+
+     bwi_gazebo
+
+  </description>
+  <author>Piyush Khandelwal</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/bwi_gazebo</url>
+
+  <depend package="gazebo"/>
+  <depend package="bwi_gazebo_plugins"/>
+  <export>
+    <gazebo gazebo_media_path="${prefix}" />
+  </export>
+
+</package>
+
+

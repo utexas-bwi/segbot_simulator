@@ -1,0 +1,23 @@
+<package>
+  <description brief="bwi_gazebo_plugins">
+
+     bwi_gazebo_plugins
+
+  </description>
+  <author>Piyush Khandelwal</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/bwi_gazebo_plugins</url>
+
+  <depend package="roscpp" />
+  <depend package="gazebo" />
+  <depend package="gazebo_plugins" />
+  <depend package="bwi_msgs"/>
+
+  <export>
+    <gazebo plugin_path="${prefix}/lib" />
+  </export>
+
+</package>
+
+
