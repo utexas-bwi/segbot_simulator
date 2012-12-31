@@ -3,6 +3,10 @@
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="world" default="ens32_world" />
+  <arg name="debug" default="false" />
+
+  <arg unless="$(arg debug)" name="gazebo_binary" value="gazebo" />
+  <arg if="$(arg debug)" name="gazebo_binary" value="debug" />
 
   <!-- set use_sim_time flag -->
   <group if="$(arg use_sim_time)">
@@ -10,8 +14,8 @@
   </group>
 
   <!-- start world -->
-  <node name="$(arg world)" pkg="gazebo" type="gazebo" args="$(find bwi_gazebo)/worlds/ens32.world" respawn="false" output="screen" />
-  <!-- <node name="$(arg world)" pkg="gazebo" type="gazebo" args="$(find bwi_gazebo)/worlds/ens32.world" respawn="false" output="screen" launch-prefix="optirun" /> -->
+  <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find bwi_gazebo)/worlds/ens32.world" respawn="false" output="screen" />
+  <!-- <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find bwi_gazebo)/worlds/ens32.world" respawn="false" output="screen" launch-prefix="optirun" /> -->
 
   <!-- start gui -->
   <group if="$(arg gui)">
