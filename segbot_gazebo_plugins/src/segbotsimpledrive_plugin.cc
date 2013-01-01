@@ -290,8 +290,8 @@ void SegbotSimpleDrivePlugin::publish_odometry()
   // getting data for base_footprint to odom transform
   math::Pose pose = this->parent->GetState().GetPose();
 
-  btQuaternion qt(pose.rot.x, pose.rot.y, pose.rot.z, pose.rot.w);
-  btVector3 vt(pose.pos.x, pose.pos.y, pose.pos.z);
+  tf::Quaternion qt(pose.rot.x, pose.rot.y, pose.rot.z, pose.rot.w);
+  tf::Vector3 vt(pose.pos.x, pose.pos.y, pose.pos.z);
 
   tf::Transform base_footprint_to_odom(qt, vt);
   transform_broadcaster_->sendTransform(tf::StampedTransform(base_footprint_to_odom,

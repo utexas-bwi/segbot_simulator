@@ -10,7 +10,7 @@
   <url>http://ros.org/wiki/bwi_gazebo</url>
 
   <depend package="gazebo"/>
-  <depend package="bwi_gazebo_plugins"/>
+  <depend package="segbot_gazebo_plugins"/>
   <export>
     <gazebo gazebo_media_path="${prefix}" />
   </export>
