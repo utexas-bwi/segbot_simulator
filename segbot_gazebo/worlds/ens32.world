@@ -1,71 +1,152 @@
 <?xml version ='1.0'?>
-<gazebo version ='1.0'>
+<gazebo version='1.2'>
 <world name='default'>
-
   <scene>
-    <ambient rgba='0.500000 0.500000 0.500000 1.000000'/>
-    <background rgba='0.500000 0.500000 0.500000 1.000000'/>
-    <shadows enabled='0'/>
+    <ambient>0.500000 0.500000 0.500000 1.000000</ambient>
+    <background>0.500000 0.500000 0.500000 1.000000</background>
+    <shadows>0</shadows>
   </scene>
-
-  <physics type='ode' update_rate='1000'>
-  <!--physics type='ode'-->
-    <gravity xyz='0.000000 0.000000 -9.800000'/>
+  <physics type='ode'>
+    <gravity>0.000000 0.000000 -9.800000</gravity>
     <ode>
-      <solver type='quick' dt='0.001000' iters='10' precon_iters='0' sor='1.300000'/>
-      <constraints cfm='0.000000' erp='0.200000' contact_max_correcting_vel='100.000000' contact_surface_layer='0.001000'/>
+      <solver>
+        <type>quick</type>
+        <dt>0.001000</dt>
+        <iters>10</iters>
+        <sor>1.300000</sor>
+      </solver>
+      <constraints>
+        <cfm>0.000000</cfm>
+        <erp>0.200000</erp>
+        <contact_max_correcting_vel>100.000000</contact_max_correcting_vel>
+        <contact_surface_layer>0.001000</contact_surface_layer>
+      </constraints>
     </ode>
-  </physics> 
-
-  <model name='plane1_model' static='1'>
-    <link name='body' gravity='1' self_collide='0' kinematic='0'>
-      <collision name='geom_1' laser_retro='0.000000'>
+    <update_rate>1000.000000</update_rate>
+  </physics>
+  <model name='plane1_model'>
+    <link name='body'>
+      <collision name='geom_1'>
         <geometry>
-          <plane normal='0.000000 0.000000 1.000000'/>
+          <plane>
+            <normal>0.000000 0.000000 1.000000</normal>
+            <size>1.000000 1.000000</size>
+          </plane>
         </geometry>
         <surface>
           <friction>
-            <ode mu='10.000000' mu2='10.000000' fdir1='0.000000 0.000000 0.000000' slip1='0.000000' slip2='0.000000'/>
+            <ode>
+              <mu>10.000000</mu>
+              <mu2>10.000000</mu2>
+              <fdir1>0.000000 0.000000 0.000000</fdir1>
+              <slip1>0.000000</slip1>
+              <slip2>0.000000</slip2>
+            </ode>
           </friction>
-          <bounce restitution_coefficient='0.000000' threshold='1000000.000000'/>
+          <bounce>
+            <restitution_coefficient>0.000000</restitution_coefficient>
+            <threshold>1000000.000000</threshold>
+          </bounce>
           <contact>
-            <ode soft_cfm='0.000000' soft_erp='0.200000' kp='10000000000.000000' kd='1.000000' min_depth='0.000100'/>
+            <ode>
+              <soft_cfm>0.000000</soft_cfm>
+              <soft_erp>0.200000</soft_erp>
+              <kp>10000000000.000000</kp>
+              <kd>1.000000</kd>
+              <max_vel>100.000000</max_vel>
+              <min_depth>0.000100</min_depth>
+            </ode>
           </contact>
         </surface>
-        <origin pose='0.000000 0.000000 0.000000 0.000000 -0.000000 0.000000'/>
       </collision>
-      <visual name='visual_1' cast_shadows='0' laser_retro='0.000000' transparency='0.000000'>
+      <visual name='visual_1'>
         <geometry>
-          <plane normal='0.000000 0.000000 1.000000'/>
+          <plane>
+            <normal>0.000000 0.000000 1.000000</normal>
+            <size>1.000000 1.000000</size>
+          </plane>
         </geometry>
-        <material script='Gazebo/Grey'/>
+        <material>
+          <script>
+            <name>__default__</name>
+          </script>
+        </material>
+        <cast_shadows>0</cast_shadows>
       </visual>
-      <damping/>
-      <origin pose='0.000000 0.000000 0.000000 0.000000 -0.000000 0.000000'/>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
     </link>
+    <static>1</static>
   </model>
-
-  <light name='my_light' type='directional' cast_shadows='0'>
-    <origin pose='0.000000 0.000000 30.000000 0.000000 -0.000000 0.000000'/>
-    <diffuse rgba='0.900000 0.900000 0.900000 1.000000'/>
-    <specular rgba='0.100000 0.100000 0.100000 1.000000'/>
-    <attenuation range='20.000000' linear='1.000000' constant='1.000000' quadratic='0.000000'/>
-    <direction xyz='0.000000 0.000000 -1.000000'/>
+  <model name='ens32_walls_model'>
+    <link name='body'>
+      <collision name='geom_1'>
+        <geometry>
+          <mesh>
+            <uri>lab-simple.dae</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>10.000000</mu>
+              <mu2>10.000000</mu2>
+              <fdir1>0.000000 0.000000 0.000000</fdir1>
+              <slip1>0.000000</slip1>
+              <slip2>0.000000</slip2>
+            </ode>
+          </friction>
+          <bounce>
+            <restitution_coefficient>0.000000</restitution_coefficient>
+            <threshold>1000000.000000</threshold>
+          </bounce>
+          <contact>
+            <ode>
+              <soft_cfm>0.000000</soft_cfm>
+              <soft_erp>0.200000</soft_erp>
+              <kp>10000000000.000000</kp>
+              <kd>1.000000</kd>
+              <max_vel>100.000000</max_vel>
+              <min_depth>0.000100</min_depth>
+            </ode>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual_1'>
+        <geometry>
+          <mesh>
+            <uri>lab-simple.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>__default__</name>
+          </script>
+        </material>
+        <cast_shadows>0</cast_shadows>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+    </link>
+    <static>1</static>
+  </model>
+  <light name='my_light' type='directional'>
+    <pose>0.000000 0.000000 30.000000 0.000000 -0.000000 0.000000</pose>
+    <diffuse>0.900000 0.900000 0.900000 1.000000</diffuse>
+    <specular>0.100000 0.100000 0.100000 1.000000</specular>
+    <attenuation>
+      <range>20.000000</range>
+    </attenuation>
+    <direction>0.000000 0.000000 -1.000000</direction>
+    <cast_shadows>0</cast_shadows>
   </light>
-
-  <model name='ens32_walls_model' static='1'>
-    <link name='ens32_walls_model::link'>
-      <collision name='geom'>
-        <geometry>
-          <mesh filename='lab-simple.dae' scale='0.0254 0.0254 0.0254'/>
-        </geometry>
-      </collision>
-      <visual name='visual' cast_shadows='0'>
-        <geometry>
-          <mesh filename='lab-simple.dae' scale='0.0254 0.0254 0.0254'/>
-        </geometry>
-      </visual>
-    </link>
-  </model>
 </world>
 </gazebo>
