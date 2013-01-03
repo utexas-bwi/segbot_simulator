@@ -9,6 +9,9 @@
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/bwi_gazebo</url>
 
+  <depend package="segbot_bringup" />
+  <depend package="segbot_description" />
+
   <depend package="gazebo"/>
   <depend package="segbot_gazebo_plugins"/>
   <export>

@@ -6,5 +6,7 @@
   <url>http://ros.org/wiki/segbot_simulator</url>
 
   <depend stack="ros" />
+  <depend stack="segbot" />
+  <depend stack="simulator_gazebo" />
 
 </stack>
