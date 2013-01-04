@@ -305,11 +305,11 @@
       </velocity_decay>
       <self_collide>0</self_collide>
       <inertial>
-        <mass>1.000000</mass>
+        <mass>10.000000</mass>
       </inertial>
       <kinematic>0</kinematic>
     </link>
-    <pose>2.000000 -2.000000 0.000000 0.000000 -0.000000 0.000000</pose>
+    <pose>0.000000 2.000000 0.000000 0.000000 -0.000000 1.570796</pose>
   </model>
   <model name='bookshelf'>
     <static>1</static>
@@ -541,10 +541,242 @@
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
-    <pose>2.000000 1.000000 0.000000 0.000000 -0.000000 0.000000</pose>
+    <pose>-2.140000 3.970000 0.000000 0.000000 -0.000000 0.000000</pose>
+  </model>
+  <model name='bookshelf_0'>
+    <static>1</static>
+    <link name='link'>
+      <inertial>
+        <mass>1.000000</mass>
+      </inertial>
+      <collision name='back'>
+        <pose>0.000000 0.005000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.900000 0.010000 1.200000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual1'>
+        <pose>0.000000 0.005000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.900000 0.010000 1.200000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='left_side'>
+        <pose>0.450000 -0.195000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.020000 0.400000 1.200000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual2'>
+        <pose>0.450000 -0.195000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.020000 0.400000 1.200000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='right_side'>
+        <pose>-0.450000 -0.195000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.020000 0.400000 1.200000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual3'>
+        <pose>-0.450000 -0.195000 0.600000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.020000 0.400000 1.200000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='bottom'>
+        <pose>0.000000 -0.195000 0.030000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.060000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual4'>
+        <pose>0.000000 -0.195000 0.030000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.060000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='top'>
+        <pose>0.000000 -0.195000 1.190000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual5'>
+        <pose>0.000000 -0.195000 1.190000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='low_shelf'>
+        <pose>0.000000 -0.195000 0.430000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual6'>
+        <pose>0.000000 -0.195000 0.430000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <collision name='high_shelf'>
+        <pose>0.000000 -0.195000 0.800000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <surface>
+          <bounce/>
+          <friction>
+            <ode/>
+          </friction>
+          <contact>
+            <ode/>
+          </contact>
+        </surface>
+      </collision>
+      <visual name='visual7'>
+        <pose>0.000000 -0.195000 0.800000 0.000000 -0.000000 0.000000</pose>
+        <geometry>
+          <box>
+            <size>0.880000 0.400000 0.020000</size>
+          </box>
+        </geometry>
+        <material>
+          <script>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+            <name>Gazebo/Wood</name>
+          </script>
+        </material>
+      </visual>
+      <velocity_decay>
+        <linear>0.000000</linear>
+        <angular>0.000000</angular>
+      </velocity_decay>
+      <self_collide>0</self_collide>
+      <kinematic>0</kinematic>
+    </link>
+    <pose>-2.140000 -2.580000 0.000000 0.000000 -0.000000 3.141593</pose>
   </model>
   <model name='unit_sphere_1'>
-    <pose>-1.000000 -1.000000 0.500000 0.000000 -0.000000 0.000000</pose>
+    <pose>000000 11.000000 0.500000 0.000000 -0.000000 0.000000</pose>
     <link name='link'>
       <inertial>
         <mass>1.000000</mass>
@@ -588,7 +820,7 @@
     <static>0</static>
   </model>
   <model name='unit_box_1'>
-    <pose>-1.000000 9.534460 0.500000 0.000000 -0.000000 0.000000</pose>
+    <pose>-0.675 9.0 0.500000 0.000000 -0.000000 0.000000</pose>
     <link name='link'>
       <inertial>
         <mass>1.000000</mass>
@@ -632,7 +864,7 @@
     <static>0</static>
   </model>
   <model name='unit_cylinder_1'>
-    <pose>2.000000 9.418040 0.500000 0.000000 -0.000000 0.000000</pose>
+    <pose>1.300000 9.0 0.500000 0.000000 -0.000000 0.000000</pose>
     <link name='link'>
       <inertial>
         <mass>1.000000</mass>
@@ -677,102 +909,8 @@
     </link>
     <static>0</static>
   </model>
-  <model name='coke_can'>
-    <link name='link'>
-      <inertial>
-        <mass>0.100000</mass>
-        <inertia>
-          <ixx>0.010000</ixx>
-          <ixy>0.000000</ixy>
-          <ixz>0.000000</ixz>
-          <iyy>0.010000</iyy>
-          <iyz>0.000000</iyz>
-          <izz>0.010000</izz>
-        </inertia>
-      </inertial>
-      <collision name='collision'>
-        <pose>0.000000 0.000000 -0.460000 0.000000 -0.000000 0.000000</pose>
-        <geometry>
-          <mesh>
-            <uri>model://coke_can/meshes/coke_can.dae</uri>
-          </mesh>
-        </geometry>
-        <surface>
-          <bounce/>
-          <friction>
-            <ode/>
-          </friction>
-          <contact>
-            <ode/>
-          </contact>
-        </surface>
-      </collision>
-      <visual name='visual'>
-        <pose>0.000000 0.000000 -0.460000 0.000000 -0.000000 0.000000</pose>
-        <geometry>
-          <mesh>
-            <uri>model://coke_can/meshes/coke_can.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-      <velocity_decay>
-        <linear>0.000000</linear>
-        <angular>0.000000</angular>
-      </velocity_decay>
-      <self_collide>0</self_collide>
-      <kinematic>0</kinematic>
-    </link>
-    <pose>1.525560 -0.546940 0.000000 0.000000 -0.000000 0.000000</pose>
-    <static>0</static>
-  </model>
-  <model name='drill'>
-    <link name='link'>
-      <inertial>
-        <inertia>
-          <ixx>0.010000</ixx>
-          <ixy>0.000000</ixy>
-          <ixz>0.000000</ixz>
-          <iyy>0.010000</iyy>
-          <iyz>0.000000</iyz>
-          <izz>0.010000</izz>
-        </inertia>
-        <mass>1.000000</mass>
-      </inertial>
-      <collision name='collision'>
-        <geometry>
-          <mesh>
-            <uri>model://cordless_drill/meshes/cordless_drill.dae</uri>
-          </mesh>
-        </geometry>
-        <surface>
-          <bounce/>
-          <friction>
-            <ode/>
-          </friction>
-          <contact>
-            <ode/>
-          </contact>
-        </surface>
-      </collision>
-      <visual name='visual'>
-        <geometry>
-          <mesh>
-            <uri>model://cordless_drill/meshes/cordless_drill.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-      <velocity_decay>
-        <linear>0.000000</linear>
-        <angular>0.000000</angular>
-      </velocity_decay>
-      <self_collide>0</self_collide>
-      <kinematic>0</kinematic>
-    </link>
-    <pose>1.000000 -1.000000 0.000000 0.000000 -0.000000 0.000000</pose>
-    <static>0</static>
-  </model>
   <model name='hammer'>
-    <static>1</static>
+    <static>0</static>
     <link name='link'>
       <collision name='collision'>
         <geometry>
@@ -804,7 +942,7 @@
       <self_collide>0</self_collide>
       <kinematic>0</kinematic>
     </link>
-    <pose>0.518085 -1.000000 0.000000 0.000000 -0.000000 0.000000</pose>
+    <pose>0 2.000000 1.030000 0.000000 -0.000000 0.000000</pose>
   </model>
 </world>
 </gazebo>
