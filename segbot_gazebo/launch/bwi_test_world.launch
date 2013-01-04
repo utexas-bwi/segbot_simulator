@@ -2,7 +2,7 @@
 
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
-  <arg name="world" default="ens32_world" />
+  <arg name="world" default="gazebo" />
   <arg name="debug" default="false" />
 
   <arg unless="$(arg debug)" name="gazebo_binary" value="gazebo" />

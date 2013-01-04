@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="world" default="ens32_world" />
+  <arg name="world" default="gazebo" />
   <arg name="map_frame" default="map" />
   <arg name="map_topic" default="/map" />
   <arg name="map_namespace" default="" />
