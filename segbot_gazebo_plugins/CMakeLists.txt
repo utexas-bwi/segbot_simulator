@@ -34,11 +34,3 @@ rosbuild_add_boost_directories()
 rosbuild_add_library(segbotdrive_plugin src/segbotdrive_plugin.cc)
 rosbuild_link_boost(segbotdrive_plugin thread)
 
-rosbuild_add_library(segbotsimpledrive_plugin src/segbotsimpledrive_plugin.cc)
-rosbuild_link_boost(segbotsimpledrive_plugin thread)
-
-#rosbuild_add_library(objectcontroller_plugin src/objectcontroller_plugin.cc)
-#rosbuild_link_boost(objectcontroller_plugin thread)
-#
-#rosbuild_add_library(personcontroller_plugin src/personcontroller_plugin.cc)
-#rosbuild_link_boost(personcontroller_plugin thread)

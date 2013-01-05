@@ -42,6 +42,7 @@
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include <boost/bind.hpp>
+#include <boost/thread/mutex.hpp>
 
 namespace gazebo
 {
@@ -140,8 +141,44 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
     this->topicName = _sdf->GetElement("topicName")->GetValueString();
   }
 
+  if (!_sdf->HasElement("updateRate"))
+  {
+    ROS_WARN("Differential Drive plugin missing <updateRate>, defaults to 100.0");
+    this->updateRate = 100.0;
+  }
+  else
+  {
+    this->updateRate = _sdf->GetElement("updateRate")->GetValueDouble();
+  }
+
+  // In the simple model:
+  //  - the collision model of the robot is a cylinder.
+  //  - the wheels are 1mm above the ground, 
+  //  - The robot is manually moved in world space
+  //  - speedup factor of about 10x over the full model
+  if (!_sdf->HasElement("useSimpleModel"))
+  {
+    ROS_WARN("Differential Drive plugin missing <useSimpleModel>, defaults to false");
+    this->useSimpleModel = false;
+  }
+  else
+  {
+    std::string value = _sdf->GetElement("useSimpleModel")->GetValueString();
+    this->useSimpleModel = value == "true" || value == "1";
+  }
+
+  // Initialize update rate stuff
+  if (this->updateRate > 0.0) {
+    this->update_period_ = 1.0 / this->updateRate;
+  } else {
+    this->update_period_ = 0.0;
+  }
+  last_update_time_ = this->world->GetSimTime();
+
+  // Initialize velocity stuff
   wheelSpeed[RIGHT] = 0;
   wheelSpeed[LEFT] = 0;
+  last_odom_pose_ = this->parent->GetWorldPose();
 
   x_ = 0;
   rot_ = 0;
@@ -159,10 +196,10 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   // Initialize the ROS node and subscribe to cmd_vel
   int argc = 0;
   char** argv = NULL;
-  ros::init(argc, argv, "diff_drive_plugin", ros::init_options::NoSigintHandler | ros::init_options::AnonymousName);
+  ros::init(argc, argv, "segbotdrive_plugin", ros::init_options::NoSigintHandler | ros::init_options::AnonymousName);
   rosnode_ = new ros::NodeHandle(this->robotNamespace);
 
-  ROS_INFO("starting diffdrive plugin in ns: %s", this->robotNamespace.c_str());
+  ROS_INFO("starting segbotdrive plugin in ns: %s", this->robotNamespace.c_str());
 
   tf_prefix_ = tf::getPrefixParam(*rosnode_);
   transform_broadcaster_ = new tf::TransformBroadcaster();
@@ -175,16 +212,6 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   sub_ = rosnode_->subscribe(so);
   pub_ = rosnode_->advertise<nav_msgs::Odometry>("odom", 1);
 
-  // Initialize the controller
-  // Reset odometric pose
-  odomPose[0] = 0.0;
-  odomPose[1] = 0.0;
-  odomPose[2] = 0.0;
-
-  odomVel[0] = 0.0;
-  odomVel[1] = 0.0;
-  odomVel[2] = 0.0;
-
   // start custom queue for diff drive
   this->callback_queue_thread_ = boost::thread(boost::bind(&SegbotDrivePlugin::QueueThread, this));
 
@@ -195,43 +222,21 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 // Update the controller
 void SegbotDrivePlugin::UpdateChild()
 {
-  // TODO: Step should be in a parameter of this function
-  double wd, ws;
-  double d1, d2;
-  double dr, da;
-  double stepTime = this->world->GetPhysicsEngine()->GetStepTime();
+  common::Time current_time = this->world->GetSimTime();
+  double seconds_since_last_update = (current_time - last_update_time_).Double();
+  if (seconds_since_last_update > update_period_) {
 
-  GetPositionCmd();
+    writePositionData(seconds_since_last_update);
+    publishOdometry(seconds_since_last_update);
 
-  wd = wheelDiameter;
-  ws = wheelSeparation;
+    // Update robot in case new velocities have been requested
+    getWheelVelocities();
+    joints[LEFT]->SetVelocity(0, wheelSpeed[LEFT] / wheelDiameter);
+    joints[RIGHT]->SetVelocity(0, wheelSpeed[RIGHT] / wheelDiameter);
 
-  // Distance travelled by front wheels
-  d1 = stepTime * wd / 2 * joints[LEFT]->GetVelocity(0);
-  d2 = stepTime * wd / 2 * joints[RIGHT]->GetVelocity(0);
+    last_update_time_+= common::Time(update_period_);
 
-  dr = (d1 + d2) / 2;
-  da = (d1 - d2) / ws;
-
-  // Compute odometric pose
-  math::Pose origPose = this->parent->GetWorldPose();
-  odomPose[0] = origPose.pos.x + dr * cos(origPose.rot.GetYaw());
-  odomPose[1] = origPose.pos.y + dr * sin(origPose.rot.GetYaw());
-  odomPose[2] = origPose.rot.GetYaw() + da;
-
-  // Compute odometric instantaneous velocity
-  odomVel[0] = dr / stepTime;
-  odomVel[1] = 0.0;
-  odomVel[2] = da / stepTime;
-
-  joints[LEFT]->SetVelocity(0, wheelSpeed[LEFT] / wheelDiameter);
-  joints[RIGHT]->SetVelocity(0, wheelSpeed[RIGHT] / wheelDiameter);
-
-  // joints[LEFT]->SetMaxForce(0, torque);
-  // joints[RIGHT]->SetMaxForce(0, torque);
-
-  write_position_data();
-  publish_odometry();
+  }
 }
 
 // Finalize the controller
@@ -244,31 +249,23 @@ void SegbotDrivePlugin::FiniChild()
   callback_queue_thread_.join();
 }
 
-void SegbotDrivePlugin::GetPositionCmd()
+void SegbotDrivePlugin::getWheelVelocities()
 {
-  lock.lock();
+  boost::mutex::scoped_lock scoped_lock(lock);
 
-  double vr, va;
-
-  vr = x_; //myIface->data->cmdVelocity.pos.x;
-  va = rot_; //myIface->data->cmdVelocity.yaw;
-
-  //std::cout << "X: [" << x_ << "] ROT: [" << rot_ << "]" << std::endl;
+  double vr = x_;
+  double va = rot_;
+  last_angular_vel_ = va;
 
   wheelSpeed[LEFT] = vr + va * wheelSeparation / 2.0;
   wheelSpeed[RIGHT] = vr - va * wheelSeparation / 2.0;
-
-  lock.unlock();
 }
 
 void SegbotDrivePlugin::cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_msg)
 {
-  lock.lock();
-
+  boost::mutex::scoped_lock scoped_lock(lock);
   x_ = cmd_msg->linear.x;
   rot_ = cmd_msg->angular.z;
-
-  lock.unlock();
 }
 
 void SegbotDrivePlugin::QueueThread()
@@ -281,7 +278,7 @@ void SegbotDrivePlugin::QueueThread()
   }
 }
 
-void SegbotDrivePlugin::publish_odometry()
+void SegbotDrivePlugin::publishOdometry(double step_time)
 {
   ros::Time current_time = ros::Time::now();
   std::string odom_frame = tf::resolve(tf_prefix_, "odom");
@@ -314,10 +311,33 @@ void SegbotDrivePlugin::publish_odometry()
   odom_.pose.covariance[28] = 1000000000000.0;
   odom_.pose.covariance[35] = 0.001;
 
-  math::Vector3 linear = this->parent->GetWorldLinearVel();
-  odom_.twist.twist.linear.x = linear.x;
-  odom_.twist.twist.linear.y = linear.y;
-  odom_.twist.twist.angular.z = this->parent->GetWorldAngularVel().z;
+  // get velocity in /odom frame
+  math::Vector3 linear;
+  if (!this->useSimpleModel) {
+    linear = this->parent->GetWorldLinearVel();
+    odom_.twist.twist.angular.z = this->parent->GetWorldAngularVel().z;
+  } else {
+    // Getting values from the worlds model in gazebo instead of supplied
+    // velocites as a simple means of error correction
+    linear.x = (pose.pos.x - last_odom_pose_.pos.x) / step_time;
+    linear.y = (pose.pos.y - last_odom_pose_.pos.y) / step_time;
+    if (last_angular_vel_ > M_PI / step_time) { // we cannot calculate the angular velocity correctly
+      odom_.twist.twist.angular.z = last_angular_vel_;
+    } else {
+      float last_yaw = last_odom_pose_.rot.GetYaw();
+      float current_yaw = pose.rot.GetYaw();
+      while (current_yaw < last_yaw - M_PI) current_yaw += 2*M_PI;
+      while (current_yaw > last_yaw + M_PI) current_yaw -= 2*M_PI;
+      float angular_diff = current_yaw - last_yaw;
+      odom_.twist.twist.angular.z = angular_diff / step_time;
+    }
+    last_odom_pose_ = pose;
+  }
+
+  // convert velocity to child_frame_id (aka base_footprint)
+  float yaw = pose.rot.GetYaw();
+  odom_.twist.twist.linear.x = cosf(yaw) * linear.x + sinf(yaw) * linear.y;
+  odom_.twist.twist.linear.y = cosf(yaw) * linear.y - sinf(yaw) * linear.x;
 
   odom_.header.stamp = current_time;
   odom_.header.frame_id = odom_frame;
@@ -327,26 +347,33 @@ void SegbotDrivePlugin::publish_odometry()
 }
 
 // Update the data in the interface
-void SegbotDrivePlugin::write_position_data()
+void SegbotDrivePlugin::writePositionData(double step_time)
 {
-  // // TODO: Data timestamp
-  // pos_iface_->data->head.time = Simulator::Instance()->GetSimTime().Double();
+  // move the simple model manually
+  if (this->useSimpleModel) {
 
-  // pose.pos.x = odomPose[0];
-  // pose.pos.y = odomPose[1];
-  // pose.rot.GetYaw() = NORMALIZE(odomPose[2]);
+    double wd, ws;
+    double d1, d2;
+    double dr, da;
 
-  // pos_iface_->data->velocity.pos.x = odomVel[0];
-  // pos_iface_->data->velocity.yaw = odomVel[2];
+    wd = wheelDiameter;
+    ws = wheelSeparation;
 
-  // math::Pose orig_pose = this->parent->GetWorldPose();
+    // Distance travelled by front wheels
+    d1 = step_time * wd * joints[LEFT]->GetVelocity(0);
+    d2 = step_time * wd * joints[RIGHT]->GetVelocity(0);
 
-  // math::Pose new_pose = orig_pose;
-  // new_pose.pos.x = odomPose[0];
-  // new_pose.pos.y = odomPose[1];
-  // new_pose.rot.SetFromEuler(math::Vector3(0,0,odomPose[2]));
+    dr = (d1 + d2) / 2;
+    da = (d1 - d2) / ws;
 
-  // this->parent->SetWorldPose( new_pose );
+    math::Pose orig_pose = this->parent->GetWorldPose();
+    math::Pose new_pose = orig_pose;
+    new_pose.pos.x = orig_pose.pos.x + dr * cos(orig_pose.rot.GetYaw());
+    new_pose.pos.y = orig_pose.pos.y + dr * sin(orig_pose.rot.GetYaw());
+    new_pose.rot.SetFromEuler(math::Vector3(0,0,orig_pose.rot.GetYaw() + da));
+    this->parent->SetWorldPose( new_pose );
+  }
+
 }
 
 GZ_REGISTER_MODEL_PLUGIN(SegbotDrivePlugin)

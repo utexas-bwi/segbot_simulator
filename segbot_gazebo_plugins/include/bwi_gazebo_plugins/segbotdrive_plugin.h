@@ -67,9 +67,9 @@ class SegbotDrivePlugin : public ModelPlugin
   protected: virtual void FiniChild();
 
 private:
-  void write_position_data();
-  void publish_odometry();
-  void GetPositionCmd();
+  void writePositionData(double step_time);
+  void publishOdometry(double step_time);
+  void getWheelVelocities();
 
   physics::WorldPtr world;
   physics::ModelPtr parent;
@@ -82,9 +82,8 @@ private:
   double wheelDiameter;
   double torque;
   double wheelSpeed[2];
-
-  double odomPose[3];
-  double odomVel[3];
+  math::Pose last_odom_pose_;
+  double last_angular_vel_;
 
   physics::JointPtr joints[2];
   physics::PhysicsEnginePtr physicsEngine;
@@ -101,6 +100,7 @@ private:
 
   std::string robotNamespace;
   std::string topicName;
+  bool useSimpleModel;
 
   // Custom Callback Queue
   ros::CallbackQueue queue_;
@@ -113,6 +113,11 @@ private:
   double x_;
   double rot_;
   bool alive_;
+
+  // Update Rate
+  double updateRate;
+  double update_period_;
+  common::Time last_update_time_;
 };
 
 }
