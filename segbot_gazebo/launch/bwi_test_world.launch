@@ -14,13 +14,11 @@
   </group>
 
   <!-- start world -->
-  <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find segbot_gazebo)/worlds/bwi_test_world.world" respawn="false" output="screen" />
-  <!-- <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find segbot_gazebo)/worlds/bwi_test_world.world" respawn="false" output="screen" launch-prefix="optirun" /> -->
+  <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find segbot_gazebo)/worlds/bwi_test_world.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
 
   <!-- start gui -->
   <group if="$(arg gui)">
-    <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen" />
-    <!-- <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen" launch-prefix="optirun" /> -->
+    <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
   </group>
 
 </launch>
