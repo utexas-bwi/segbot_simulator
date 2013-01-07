@@ -909,40 +909,40 @@
     </link>
     <static>0</static>
   </model>
-  <model name='hammer'>
-    <static>0</static>
-    <link name='link'>
-      <collision name='collision'>
-        <geometry>
-          <mesh>
-            <uri>model://hammer/meshes/hammer.dae</uri>
-          </mesh>
-        </geometry>
-        <surface>
-          <bounce/>
-          <friction>
-            <ode/>
-          </friction>
-          <contact>
-            <ode/>
-          </contact>
-        </surface>
-      </collision>
-      <visual name='visual'>
-        <geometry>
-          <mesh>
-            <uri>model://hammer/meshes/hammer.dae</uri>
-          </mesh>
-        </geometry>
-      </visual>
-      <velocity_decay>
-        <linear>0.000000</linear>
-        <angular>0.000000</angular>
-      </velocity_decay>
-      <self_collide>0</self_collide>
-      <kinematic>0</kinematic>
-    </link>
-    <pose>0 2.000000 1.030000 0.000000 -0.000000 0.000000</pose>
-  </model>
+  <!-- <model name='hammer'> -->
+  <!--   <static>0</static> -->
+  <!--   <link name='link'> -->
+  <!--     <collision name='collision'> -->
+  <!--       <geometry> -->
+  <!--         <mesh> -->
+  <!--           <uri>model://hammer/meshes/hammer.dae</uri> -->
+  <!--         </mesh> -->
+  <!--       </geometry> -->
+  <!--       <surface> -->
+  <!--         <bounce/> -->
+  <!--         <friction> -->
+  <!--           <ode/> -->
+  <!--         </friction> -->
+  <!--         <contact> -->
+  <!--           <ode/> -->
+  <!--         </contact> -->
+  <!--       </surface> -->
+  <!--     </collision> -->
+  <!--     <visual name='visual'> -->
+  <!--       <geometry> -->
+  <!--         <mesh> -->
+  <!--           <uri>model://hammer/meshes/hammer.dae</uri> -->
+  <!--         </mesh> -->
+  <!--       </geometry> -->
+  <!--     </visual> -->
+  <!--     <velocity_decay> -->
+  <!--       <linear>0.000000</linear> -->
+  <!--       <angular>0.000000</angular> -->
+  <!--     </velocity_decay> -->
+  <!--     <self_collide>0</self_collide> -->
+  <!--     <kinematic>0</kinematic> -->
+  <!--   </link> -->
+  <!--   <pose>0 2.000000 1.030000 0.000000 -0.000000 0.000000</pose> -->
+  <!-- </model> -->
 </world>
 </gazebo>
