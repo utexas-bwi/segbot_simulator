@@ -44,6 +44,7 @@
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
+#include <nav_msgs/OccupancyGrid.h>
 
 // Custom Callback Queue
 #include <ros/callback_queue.h>
@@ -90,8 +91,8 @@ private:
 
   // ROS STUFF
   ros::NodeHandle* rosnode_;
-  ros::Publisher pub_;
-  ros::Subscriber sub_;
+  ros::Publisher pub_, pub2_;
+  ros::Subscriber sub_, sub2_;
   tf::TransformBroadcaster *transform_broadcaster_;
   nav_msgs::Odometry odom_;
   std::string tf_prefix_;
@@ -118,6 +119,17 @@ private:
   double updateRate;
   double update_period_;
   common::Time last_update_time_;
+
+  // Simple map stuff
+  std::string simpleMapTopic;
+  double simpleModelRadius;
+  double simpleRobotPadding;
+  double circumscribed_robot_distance_;
+  nav_msgs::OccupancyGrid simple_map_;
+  bool map_available_;
+  void getSimpleMap(const nav_msgs::OccupancyGrid::ConstPtr& map);
+  double simple_map_block_time_;
+
 };
 
 }

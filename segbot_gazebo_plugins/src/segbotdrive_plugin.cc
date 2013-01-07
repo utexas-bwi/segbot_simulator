@@ -40,6 +40,7 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/Twist.h>
+#include <nav_msgs/GetMap.h>
 #include <nav_msgs/Odometry.h>
 #include <boost/bind.hpp>
 #include <boost/thread/mutex.hpp>
@@ -76,78 +77,56 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   if (!this->parent) { gzthrow("Differential_Position2d controller requires a Model as its parent"); }
 
   this->robotNamespace = "";
-  if (_sdf->HasElement("robotNamespace"))
-  {
+  if (_sdf->HasElement("robotNamespace")) {
     this->robotNamespace = _sdf->GetElement("robotNamespace")->GetValueString() + "/";
   }
 
-  if (!_sdf->HasElement("leftJoint"))
-  {
+  if (!_sdf->HasElement("leftJoint")) {
     ROS_WARN("Differential Drive plugin missing <leftJoint>, defaults to left_joint");
     this->leftJointName = "left_joint";
-  }
-  else
-  {
+  } else {
     this->leftJointName = _sdf->GetElement("leftJoint")->GetValueString();
   }
 
-  if (!_sdf->HasElement("rightJoint"))
-  {
+  if (!_sdf->HasElement("rightJoint")) {
     ROS_WARN("Differential Drive plugin missing <rightJoint>, defaults to right_joint");
     this->rightJointName = "right_joint";
-  }
-  else
-  {
+  } else {
     this->rightJointName = _sdf->GetElement("rightJoint")->GetValueString();
   }
 
-  if (!_sdf->HasElement("wheelSeparation"))
-  {
+  if (!_sdf->HasElement("wheelSeparation")) {
     ROS_WARN("Differential Drive plugin missing <wheelSeparation>, defaults to 0.34");
     this->wheelSeparation = 0.34;
-  }
-  else
-  {
+  } else {
     this->wheelSeparation = _sdf->GetElement("wheelSeparation")->GetValueDouble();
   }
 
-  if (!_sdf->HasElement("wheelDiameter"))
-  {
+  if (!_sdf->HasElement("wheelDiameter")) {
     ROS_WARN("Differential Drive plugin missing <wheelDiameter>, defaults to 0.15");
     this->wheelDiameter = 0.15;
-  }
-  else
-  {
+  } else {
     this->wheelDiameter = _sdf->GetElement("wheelDiameter")->GetValueDouble();
   }
 
-  if (!_sdf->HasElement("torque"))
-  {
+  if (!_sdf->HasElement("torque")) {
     ROS_WARN("Differential Drive plugin missing <torque>, defaults to 5.0");
     this->torque = 5.0;
-  }
-  else
-  {
+  } else {
     this->torque = _sdf->GetElement("torque")->GetValueDouble();
   }
 
-  if (!_sdf->HasElement("topicName"))
-  {
+  if (!_sdf->HasElement("topicName")) {
     ROS_WARN("Differential Drive plugin missing <topicName>, defaults to cmd_vel");
     this->topicName = "cmd_vel";
-  }
-  else
-  {
+  } else {
     this->topicName = _sdf->GetElement("topicName")->GetValueString();
   }
 
-  if (!_sdf->HasElement("updateRate"))
-  {
+  if (!_sdf->HasElement("updateRate")) {
     ROS_WARN("Differential Drive plugin missing <updateRate>, defaults to 100.0");
     this->updateRate = 100.0;
-  }
-  else
-  {
+  } else {
     this->updateRate = _sdf->GetElement("updateRate")->GetValueDouble();
   }
 
@@ -156,15 +135,34 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
   //  - the wheels are 1mm above the ground, 
   //  - The robot is manually moved in world space
   //  - speedup factor of about 10x over the full model
-  if (!_sdf->HasElement("useSimpleModel"))
-  {
+  if (!_sdf->HasElement("useSimpleModel")) {
     ROS_WARN("Differential Drive plugin missing <useSimpleModel>, defaults to false");
     this->useSimpleModel = false;
-  }
-  else
-  {
+  } else {
     std::string value = _sdf->GetElement("useSimpleModel")->GetValueString();
     this->useSimpleModel = value == "true" || value == "1";
+  }
+
+  if (this->useSimpleModel) { // Get some additional parameters
+    if (!_sdf->HasElement("simpleMapTopic")) {
+      ROS_WARN("Differential Drive plugin missing <simpleMapTopic>, defaults to static_map");
+      this->simpleMapTopic = "map";
+    } else {
+      this->simpleMapTopic = _sdf->GetElement("simpleMapTopic")->GetValueString();
+    }
+    if (!_sdf->HasElement("simpleModelRadius")) {
+      ROS_WARN("Differential Drive plugin missing <simpleModelRadius>, defaults to 0.5");
+      this->simpleModelRadius = 0.5;
+    } else {
+      this->simpleModelRadius = _sdf->GetElement("simpleModelRadius")->GetValueDouble();
+    }
+    if (!_sdf->HasElement("simpleRobotPadding")) {
+      ROS_WARN("Differential Drive plugin missing <simpleRobotPadding>, defaults to 0.05");
+      this->simpleRobotPadding = 0.05;
+    } else {
+      this->simpleRobotPadding = _sdf->GetElement("simpleRobotPadding")->GetValueDouble();
+    }
+    this->circumscribed_robot_distance_ = this->simpleRobotPadding + this->simpleModelRadius;
   }
 
   // Initialize update rate stuff
@@ -201,6 +199,7 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
 
   ROS_INFO("starting segbotdrive plugin in ns: %s", this->robotNamespace.c_str());
 
+
   tf_prefix_ = tf::getPrefixParam(*rosnode_);
   transform_broadcaster_ = new tf::TransformBroadcaster();
 
@@ -209,14 +208,28 @@ void SegbotDrivePlugin::Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf)
       ros::SubscribeOptions::create<geometry_msgs::Twist>(topicName, 1,
                                                           boost::bind(&SegbotDrivePlugin::cmdVelCallback, this, _1),
                                                           ros::VoidPtr(), &queue_);
+
   sub_ = rosnode_->subscribe(so);
+
+  if (useSimpleModel) {
+    ROS_INFO("Subscribing to %s", simpleMapTopic.c_str());
+    ros::SubscribeOptions so2 =
+        ros::SubscribeOptions::create<nav_msgs::OccupancyGrid>(simpleMapTopic, 1,
+                                                            boost::bind(&SegbotDrivePlugin::getSimpleMap, this, _1),
+                                                            ros::VoidPtr(), &queue_);
+    sub2_ = rosnode_->subscribe(so2);
+  }
+  map_available_ = false;
+
   pub_ = rosnode_->advertise<nav_msgs::Odometry>("odom", 1);
+  pub2_ = rosnode_->advertise<nav_msgs::OccupancyGrid>("expanded_map", 1, true);
 
   // start custom queue for diff drive
   this->callback_queue_thread_ = boost::thread(boost::bind(&SegbotDrivePlugin::QueueThread, this));
 
   // listen to the update event (broadcast every simulation iteration)
   this->updateConnection = event::Events::ConnectWorldUpdateStart(boost::bind(&SegbotDrivePlugin::UpdateChild, this));
+
 }
 
 // Update the controller
@@ -276,6 +289,60 @@ void SegbotDrivePlugin::QueueThread()
   {
     queue_.callAvailable(ros::WallDuration(timeout));
   }
+}
+
+void SegbotDrivePlugin::getSimpleMap(const nav_msgs::OccupancyGrid::ConstPtr& map) {
+
+  simple_map_.header = map->header;
+
+  simple_map_.info.map_load_time = map->info.map_load_time;
+  simple_map_.info.resolution = map->info.resolution;
+  simple_map_.info.width = map->info.width;
+  simple_map_.info.height = map->info.height;
+
+  // Get the map origin in global space
+  // useful for multi_level_map
+  tf::TransformListener listener;
+  geometry_msgs::PoseStamped pose_in, pose_out;
+  pose_in.header = map->header;
+  pose_in.pose = map->info.origin;
+
+  if (listener.waitForTransform(map->header.frame_id, "/map", ros::Time(0), ros::Duration(5.0))) {
+    ROS_INFO("Transformation for simple map acquired");
+    listener.transformPose("/map", ros::Time(0), pose_in, pose_in.header.frame_id, pose_out);
+    simple_map_.info.origin = pose_out.pose;
+  } else {
+    ROS_ERROR("Unable to get transformation from /map to %s.", map->header.frame_id.c_str());
+    simple_map_.info.origin = pose_in.pose;
+  }
+
+  // expand the map out based on the circumscribed robot distance
+  int expand_pixels = ceil(circumscribed_robot_distance_ / map->info.resolution);
+  simple_map_.data.resize(map->info.height * map->info.width);
+  for (int i = 0; i < (int)map->info.height; ++i) {
+    for (int j = 0; j < (int)map->info.width; ++j) {
+      int low_i = (i - expand_pixels < 0) ? 0 : i - expand_pixels;
+      int high_i = (i + expand_pixels >= (int)map->info.height) ? 
+          map->info.height - 1 : i + expand_pixels;
+      int max = 0;
+      for (int k = low_i; k <= high_i; ++k) {
+        int diff_j = floor(sqrtf(expand_pixels * expand_pixels - (i - k) * (i - k)));
+        int low_j = (j - diff_j < 0) ? 0 : j - diff_j;
+        int high_j = (j + diff_j >= (int)map->info.width) ? 
+            map->info.width - 1 : j + diff_j;
+        for (int l = low_j; l <= high_j; ++l) {
+          if (map->data[k * map->info.width + l] > max) {
+            max = map->data[k * map->info.width + l];
+          }
+        }
+      }
+      simple_map_.data[i * map->info.width + j] = max;
+    }
+  }
+
+  ROS_INFO("Simple Map Acquired");
+  pub2_.publish(simple_map_);
+  map_available_ = true;
 }
 
 void SegbotDrivePlugin::publishOdometry(double step_time)
@@ -350,7 +417,7 @@ void SegbotDrivePlugin::publishOdometry(double step_time)
 void SegbotDrivePlugin::writePositionData(double step_time)
 {
   // move the simple model manually
-  if (this->useSimpleModel) {
+  if (this->useSimpleModel && map_available_) {
 
     double wd, ws;
     double d1, d2;
@@ -371,7 +438,23 @@ void SegbotDrivePlugin::writePositionData(double step_time)
     new_pose.pos.x = orig_pose.pos.x + dr * cos(orig_pose.rot.GetYaw());
     new_pose.pos.y = orig_pose.pos.y + dr * sin(orig_pose.rot.GetYaw());
     new_pose.rot.SetFromEuler(math::Vector3(0,0,orig_pose.rot.GetYaw() + da));
-    this->parent->SetWorldPose( new_pose );
+
+    // Check if the new pose can be allowed
+    int x_pxl = (new_pose.pos.x - simple_map_.info.origin.position.x) / simple_map_.info.resolution;
+    int y_pxl = (new_pose.pos.y - simple_map_.info.origin.position.y) / simple_map_.info.resolution;
+
+    if (x_pxl < 0 || x_pxl >= (int)simple_map_.info.width ||
+        y_pxl < 0 || y_pxl >= (int)simple_map_.info.height ||
+        (simple_map_.data[(simple_map_.info.height - y_pxl - 1)*simple_map_.info.width + x_pxl] < 50)) {
+      this->parent->SetWorldPose(new_pose);
+      simple_map_block_time_ = 0;
+    } else {
+      simple_map_block_time_ += step_time;
+      if (simple_map_block_time_ > 2.0) {
+        ROS_WARN("Simple Segbot plugin is preventing running into a wall. If you think this is an error, then check the map");
+        simple_map_block_time_ = 0;
+      }
+    }
   }
 
 }
