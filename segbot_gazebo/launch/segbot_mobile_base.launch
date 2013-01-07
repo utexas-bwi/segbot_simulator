@@ -9,7 +9,7 @@
   <arg name="robotid" default="segbot" />
   <arg name="tf_prefix" default="" />
   <arg name="has_tf_prefix" default="false" />
-  <arg name="use_full_gazebo_model" default="false" />
+  <arg name="use_full_gazebo_model" default="true" />
   <arg name="configuration_file" default="$(find segbot_bringup)/launch/includes/segbot_hokuyo.auxillary.launch" />
 
   <!-- whether to launch autonomous stuff or not -->
