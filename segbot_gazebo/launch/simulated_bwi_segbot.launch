@@ -1,0 +1,19 @@
+<launch>
+
+  <!-- always set use_sim_time flag at the top level -->
+  <arg name="use_sim_time" default="true" />
+  <group if="$(arg use_sim_time)">
+    <param name="/use_sim_time" value="true" />
+  </group>
+
+  <include file="$(find segbot_gazebo)/launch/bwi_test_world.launch">
+    <arg name="use_sim_time" value="false"/>  <!-- do not set it again -->
+  </include>
+
+  <!-- add sebot mobile base to simulation -->
+  <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch"/>
+
+  <!-- BWI test world map server -->
+  <include file="$(find segbot_gazebo)/launch/bwi_test_world_map_server.launch"/>
+
+</launch>
