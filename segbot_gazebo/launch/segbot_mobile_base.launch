@@ -4,8 +4,8 @@
   <arg name="map_frame" default="map" />
   <arg name="map_topic" default="/map" />
   <arg name="map_namespace" default="" />
-  <arg name="x" default="5" />
-  <arg name="y" default="5" />
+  <arg name="x" default="0" />
+  <arg name="y" default="0" />
   <arg name="robotid" default="segbot" />
   <arg name="tf_prefix" default="" />
   <arg name="has_tf_prefix" default="false" />
@@ -68,7 +68,7 @@
 
   <!-- launch move base -->
   <group if="$(arg launch_move_base)">
-    <include file="$(find segbot_navigation)/launch/move_base.launch">
+    <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
       <arg name="map_topic" value="$(arg map_topic)" />
     </include>
   </group>
