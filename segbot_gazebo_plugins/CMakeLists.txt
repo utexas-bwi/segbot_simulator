@@ -31,6 +31,8 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 rosbuild_add_boost_directories()
 
+rosbuild_add_library(gazebo_ros_video src/gazebo_ros_video.cc)
+
 rosbuild_add_library(diff_drive_plugin src/diff_drive_plugin.cc)
 rosbuild_link_boost(diff_drive_plugin thread)
 
