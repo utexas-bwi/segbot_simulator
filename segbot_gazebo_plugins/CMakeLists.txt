@@ -31,6 +31,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
 rosbuild_add_boost_directories()
 
-rosbuild_add_library(segbotdrive_plugin src/segbotdrive_plugin.cc)
-rosbuild_link_boost(segbotdrive_plugin thread)
+rosbuild_add_library(diff_drive_plugin src/diff_drive_plugin.cc)
+rosbuild_link_boost(diff_drive_plugin thread)
 

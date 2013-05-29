@@ -54,83 +54,77 @@
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 
-namespace gazebo
-{
-class Joint;
-class Entity;
+namespace gazebo {
 
-class SegbotDrivePlugin : public ModelPlugin
-{
-  public: SegbotDrivePlugin();
-  public: ~SegbotDrivePlugin();
-  public: void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
-  protected: virtual void UpdateChild();
-  protected: virtual void FiniChild();
+  class Joint;
+  class Entity;
 
-private:
-  void writePositionData(double step_time);
-  void publishOdometry(double step_time);
-  void getWheelVelocities();
+  class DiffDrivePlugin : public ModelPlugin {
 
-  physics::WorldPtr world;
-  physics::ModelPtr parent;
-  event::ConnectionPtr updateConnection;
+    public:
+      DiffDrivePlugin();
+      ~DiffDrivePlugin();
+      void Load(physics::ModelPtr _parent, sdf::ElementPtr _sdf);
 
-  std::string leftJointName;
-  std::string rightJointName;
+    protected:
+      virtual void UpdateChild();
+      virtual void FiniChild();
 
-  double wheelSeparation;
-  double wheelDiameter;
-  double torque;
-  double wheelSpeed[2];
-  math::Pose last_odom_pose_;
-  double last_angular_vel_;
+    private:
+      void writePositionData(double step_time);
+      void publishOdometry(double step_time);
+      void getWheelVelocities();
 
-  physics::JointPtr joints[2];
-  physics::PhysicsEnginePtr physicsEngine;
+      physics::WorldPtr world;
+      physics::ModelPtr parent;
+      event::ConnectionPtr updateConnection;
 
-  // ROS STUFF
-  ros::NodeHandle* rosnode_;
-  ros::Publisher pub_, pub2_;
-  ros::Subscriber sub_, sub2_;
-  tf::TransformBroadcaster *transform_broadcaster_;
-  nav_msgs::Odometry odom_;
-  std::string tf_prefix_;
+      std::string leftJointName;
+      std::string rightJointName;
 
-  boost::mutex lock;
+      double wheelSeparation;
+      double wheelDiameter;
+      double torque;
+      double wheelSpeed[2];
+      math::Pose last_odom_pose_;
+      double last_angular_vel_;
 
-  std::string robotNamespace;
-  std::string topicName;
-  bool useSimpleModel;
+      physics::JointPtr joints[2];
+      physics::PhysicsEnginePtr physicsEngine;
 
-  // Custom Callback Queue
-  ros::CallbackQueue queue_;
-  boost::thread callback_queue_thread_;
-  void QueueThread();
+      // ROS STUFF
+      ros::NodeHandle* rosnode_;
+      ros::Publisher pub_;
+      ros::Subscriber sub_;
+      tf::TransformBroadcaster *transform_broadcaster_;
+      nav_msgs::Odometry odom_;
+      std::string tf_prefix_;
 
-  // DiffDrive stuff
-  void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_msg);
+      boost::mutex lock;
 
-  double x_;
-  double rot_;
-  bool alive_;
+      std::string robotNamespace;
+      std::string topicName;
+      bool useSimpleModel;
 
-  // Update Rate
-  double updateRate;
-  double update_period_;
-  common::Time last_update_time_;
+      // Custom Callback Queue
+      ros::CallbackQueue queue_;
+      boost::thread callback_queue_thread_;
+      void QueueThread();
 
-  // Simple map stuff
-  std::string simpleMapTopic;
-  double simpleModelRadius;
-  double simpleRobotPadding;
-  double circumscribed_robot_distance_;
-  nav_msgs::OccupancyGrid simple_map_;
-  bool map_available_;
-  void getSimpleMap(const nav_msgs::OccupancyGrid::ConstPtr& map);
-  double simple_map_block_time_;
+      // DiffDrive stuff
+      void cmdVelCallback(const geometry_msgs::Twist::ConstPtr& cmd_msg);
 
-};
+      double x_;
+      double rot_;
+      bool alive_;
+
+      // Update Rate
+      double updateRate;
+      double update_period_;
+      common::Time last_update_time_;
+
+
+  };
 
 }
 
