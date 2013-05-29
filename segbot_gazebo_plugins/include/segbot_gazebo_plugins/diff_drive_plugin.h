@@ -71,7 +71,6 @@ namespace gazebo {
       virtual void FiniChild();
 
     private:
-      void writePositionData(double step_time);
       void publishOdometry(double step_time);
       void getWheelVelocities();
 
