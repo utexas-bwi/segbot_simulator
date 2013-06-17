@@ -10,11 +10,11 @@
   <url>http://ros.org/wiki/bwi_gazebo_plugins</url>
 
   <depend package="roscpp" />
-  <depend package="gazebo" />
+  <depend package="gazebo_ros" />
   <depend package="gazebo_plugins" />
 
   <export>
-    <gazebo plugin_path="${prefix}/lib" />
+    <gazebo_ros plugin_path="${prefix}/lib" />
   </export>
 
 </package>
