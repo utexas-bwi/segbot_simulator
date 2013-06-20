@@ -21,6 +21,14 @@ pkg_check_modules(OPENCV REQUIRED opencv)
 include_directories(${OPENCV_INCLUDE_DIRS})
 link_directories(${OPENCV_LIBRARY_DIRS})
 
+pkg_check_modules(GAZEBO REQUIRED gazebo)
+include_directories(${GAZEBO_INCLUDE_DIRS})
+link_directories(${GAZEBO_LIBRARY_DIRS})
+
+pkg_check_modules(OGRE REQUIRED OGRE)
+include_directories(${OGRE_INCLUDE_DIRS})
+link_directories(${OGRE_LIBRARY_DIRS})
+
 #uncomment if you have defined messages
 #rosbuild_genmsg()
 #uncomment if you have defined services
@@ -39,9 +47,9 @@ rosbuild_add_boost_directories()
 rosbuild_add_library(object_controller_plugin src/object_controller_plugin.cc)
 rosbuild_link_boost(object_controller_plugin thread)
 
-rosbuild_add_library(gazebo_ros_video src/gazebo_ros_video.cc)
-target_link_libraries(gazebo_ros_video ${OPENCV_LIBRARIES})
-rosbuild_link_boost(gazebo_ros_video thread)
+#rosbuild_add_library(gazebo_ros_video src/gazebo_ros_video.cc)
+#target_link_libraries(gazebo_ros_video ${OPENCV_LIBRARIES})
+#rosbuild_link_boost(gazebo_ros_video thread)
 
 rosbuild_add_library(diff_drive_plugin src/diff_drive_plugin.cc)
 rosbuild_link_boost(diff_drive_plugin thread)
