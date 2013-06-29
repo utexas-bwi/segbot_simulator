@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(segbot_gazebo_plugins)
 
-find_package(catkin REQUIRED COMPONENTS gazebo_ros gazebo_plugins image_transport cv_bridge message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp gazebo_ros gazebo_plugins image_transport cv_bridge message_generation)
 find_package(Boost REQUIRED COMPONENTS thread)
 
 # Start custom Gazebo CMake stuff
@@ -57,7 +57,7 @@ add_library(object_controller_plugin src/object_controller_plugin.cc)
 set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${ld_flags}")
 set_target_properties(object_controller_plugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
 target_link_libraries(object_controller_plugin 
-  ${catkin_libraries}
+  ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${GAZEBO_SYSTEM_LIBRARIES} 
 )
@@ -66,13 +66,14 @@ add_library(gazebo_ros_video src/gazebo_ros_video.cc)
 set_target_properties(gazebo_ros_video PROPERTIES LINK_FLAGS "${ld_flags}")
 set_target_properties(gazebo_ros_video PROPERTIES COMPILE_FLAGS "${cxx_flags}")
 target_link_libraries(gazebo_ros_video 
-  ${catkin_libraries}
+  ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${GAZEBO_SYSTEM_LIBRARIES} 
 )
 
 catkin_package(
   CATKIN_DEPENDS 
+    roscpp
     gazebo_ros 
     gazebo_plugins 
     image_transport 
@@ -85,8 +86,6 @@ catkin_package(
     gazebo_ros_video
 )
 
-# Install targets
-
 install(TARGETS 
   object_controller_plugin  
   gazebo_ros_video
@@ -94,4 +93,4 @@ install(TARGETS
   )
 
 install(DIRECTORY include 
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/include)
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
