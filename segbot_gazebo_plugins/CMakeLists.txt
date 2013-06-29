@@ -1,56 +1,97 @@
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+# http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
+cmake_minimum_required(VERSION 2.8.3)
+project(segbot_gazebo_plugins)
 
-# Set the build type.  Options are:
-#  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
-#  Debug          : w/ debug symbols, w/o optimization
-#  Release        : w/o debug symbols, w/ optimization
-#  RelWithDebInfo : w/ debug symbols, w/ optimization
-#  MinSizeRel     : w/o debug symbols, w/ optimization, stripped binaries
-#set(ROS_BUILD_TYPE RelWithDebInfo)
+find_package(catkin REQUIRED COMPONENTS gazebo_ros gazebo_plugins image_transport cv_bridge message_generation)
+find_package(Boost REQUIRED COMPONENTS thread)
 
-rosbuild_init()
+# Start custom Gazebo CMake stuff
+include (FindPkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(GAZEBO_SYSTEM REQUIRED gazebo)
+else()
+  message(FATAL_ERROR "pkg-config is required; please install it")
+endif()
 
-#set the default path for built executables to the "bin" directory
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-#set the default path for built libraries to the "lib" directory
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+set(cxx_flags)
+foreach (item ${GAZEBO_SYSTEM_CFLAGS})
+  set(cxx_flags "${cxx_flags} ${item}")
+endforeach ()
+message(STATUS "segbot_gazebo_plugins: using cxx_flags: ${cxx_flags}")
 
-include($ENV{ROS_ROOT}/core/rosbuild/FindPkgConfig.cmake)
-pkg_check_modules(OPENCV REQUIRED opencv)
-include_directories(${OPENCV_INCLUDE_DIRS})
-link_directories(${OPENCV_LIBRARY_DIRS})
+set(ld_flags)
+foreach (item ${GAZEBO_SYSTEM_LDFLAGS})
+  set(ld_flags "${ld_flags} ${item}")
+endforeach ()
+message(STATUS "segbot_gazebo_plugins: using ld_flags: ${ld_flags}")
 
-pkg_check_modules(GAZEBO REQUIRED gazebo)
-include_directories(${GAZEBO_INCLUDE_DIRS})
-link_directories(${GAZEBO_LIBRARY_DIRS})
+pkg_check_modules(OGRE OGRE)
 
-pkg_check_modules(OGRE REQUIRED OGRE)
-include_directories(${OGRE_INCLUDE_DIRS})
-link_directories(${OGRE_LIBRARY_DIRS})
+execute_process(COMMAND
+  pkg-config --variable=plugindir OGRE
+  OUTPUT_VARIABLE OGRE_PLUGIN_PATH
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-#uncomment if you have defined messages
-#rosbuild_genmsg()
-#uncomment if you have defined services
-rosbuild_gensrv()
+# End custom gazebo cmake stuff
 
-#common commands for building c++ executables and libraries
-#rosbuild_add_library(${PROJECT_NAME} src/example.cpp)
-#target_link_libraries(${PROJECT_NAME} another_library)
-#rosbuild_add_boost_directories()
-#rosbuild_link_boost(${PROJECT_NAME} thread)
-#rosbuild_add_executable(example examples/example.cpp)
-#target_link_libraries(example ${PROJECT_NAME})
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${GAZEBO_SYSTEM_INCLUDE_DIRS} 
+  ${OGRE_INCLUDE_DIRS}
+)
 
-rosbuild_add_boost_directories()
+add_service_files(
+  FILES
+  UpdatePluginState.srv
+)
 
-rosbuild_add_library(object_controller_plugin src/object_controller_plugin.cc)
-rosbuild_link_boost(object_controller_plugin thread)
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
-#rosbuild_add_library(gazebo_ros_video src/gazebo_ros_video.cc)
-#target_link_libraries(gazebo_ros_video ${OPENCV_LIBRARIES})
-#rosbuild_link_boost(gazebo_ros_video thread)
+add_library(object_controller_plugin src/object_controller_plugin.cc)
+set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${ld_flags}")
+set_target_properties(object_controller_plugin PROPERTIES COMPILE_FLAGS "${cxx_flags}")
+target_link_libraries(object_controller_plugin 
+  ${catkin_libraries}
+  ${Boost_LIBRARIES}
+  ${GAZEBO_SYSTEM_LIBRARIES} 
+)
 
-rosbuild_add_library(diff_drive_plugin src/diff_drive_plugin.cc)
-rosbuild_link_boost(diff_drive_plugin thread)
+add_library(gazebo_ros_video src/gazebo_ros_video.cc)
+set_target_properties(gazebo_ros_video PROPERTIES LINK_FLAGS "${ld_flags}")
+set_target_properties(gazebo_ros_video PROPERTIES COMPILE_FLAGS "${cxx_flags}")
+target_link_libraries(gazebo_ros_video 
+  ${catkin_libraries}
+  ${Boost_LIBRARIES}
+  ${GAZEBO_SYSTEM_LIBRARIES} 
+)
 
+catkin_package(
+  CATKIN_DEPENDS 
+    gazebo_ros 
+    gazebo_plugins 
+    image_transport 
+    cv_bridge
+    message_runtime
+  INCLUDE_DIRS 
+    include
+  LIBRARIES
+    object_controller_plugin
+    gazebo_ros_video
+)
+
+# Install targets
+
+install(TARGETS 
+  object_controller_plugin  
+  gazebo_ros_video
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  )
+
+install(DIRECTORY include 
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/include)

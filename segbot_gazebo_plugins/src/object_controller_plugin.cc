@@ -28,8 +28,8 @@
 
 #include <segbot_gazebo_plugins/object_controller_plugin.h>
 
-#include <math/gzmath.hh>
-#include <sdf/sdf.hh>
+#include <gazebo/math/gzmath.hh>
+#include <gazebo/sdf/sdf.hh>
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>

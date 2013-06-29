@@ -1,0 +1,25 @@
+<package>
+  <name>segbot_simulator</name>
+  <version>0.1.0</version>
+  <description>segbot_simulator</description>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/segbot_simulator</url>
+  <url type="repository">https://github.com/utexas-bwi/segbot_simulator.git</url>
+  <url type="bugtracker">https://github.com/utexas-bwi/segbot_simulator/issues</url>
+
+  <author>Maintained by Piyush Khandelwal</author>
+  <maintainer email="piyushk@gmail.com">Piyush Khandelwal</maintainer>
+  <maintainer email="jack.oquin@gmail.com">Jack O'Quin</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>segbot_gazebo</run_depend>
+  <run_depend>segbot_gazebo_plugins</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+
+</package>
