@@ -15,18 +15,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <!-- <build_depend>segbot_bringup</build_depend> -->
-  <!-- <build_depend>segbot_description</build_depend> -->
-  <!-- <build_depend>gazebo</build_depend> -->
-  <!-- <build_depend>segbot_gazebo_plugins</build_depend> -->
   <run_depend>segbot_bringup</run_depend>
   <run_depend>segbot_description</run_depend>
+  <run_depend>segbot_navigation</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>segbot_gazebo_plugins</run_depend>
-  <!-- <test_depend>segbot_bringup</test_depend> -->
-  <!-- <test_depend>segbot_description</test_depend> -->
-  <!-- <test_depend>gazebo</test_depend> -->
-  <!-- <test_depend>segbot_gazebo_plugins</test_depend> -->
 
   <export>
     <gazebo_ros gazebo_media_path="${prefix}"/>
