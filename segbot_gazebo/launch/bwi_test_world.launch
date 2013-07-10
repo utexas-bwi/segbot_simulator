@@ -5,7 +5,7 @@
   <arg name="world" default="gazebo" />
   <arg name="debug" default="false" />
 
-  <arg unless="$(arg debug)" name="gazebo_binary" value="gazebo" />
+  <arg unless="$(arg debug)" name="gazebo_binary" value="gzserver" />
   <arg if="$(arg debug)" name="gazebo_binary" value="debug" />
 
   <!-- set use_sim_time flag -->
@@ -14,11 +14,11 @@
   </group>
 
   <!-- start world -->
-  <node name="$(arg world)" pkg="gazebo" type="$(arg gazebo_binary)" args="$(find segbot_gazebo)/worlds/bwi_test_world.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
+  <node name="$(arg world)" pkg="gazebo_ros" type="$(arg gazebo_binary)" args="$(find segbot_gazebo)/worlds/bwi_test_world.world" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
 
   <!-- start gui -->
   <group if="$(arg gui)">
-    <node name="gazebo_gui" pkg="gazebo" type="gui" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
+    <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen" launch-prefix="$(optenv OPTIRUN_LAUNCH_PREFIX)" />
   </group>
 
 </launch>
