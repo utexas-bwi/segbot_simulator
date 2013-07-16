@@ -52,6 +52,7 @@ generate_messages(
 )
 
 add_library(object_controller_plugin src/object_controller_plugin.cc)
+add_dependencies(object_controller_plugin segbot_gazebo_plugins_gencpp)
 set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${LD_FLAGS}")
 target_link_libraries(object_controller_plugin 
   ${catkin_LIBRARIES}
