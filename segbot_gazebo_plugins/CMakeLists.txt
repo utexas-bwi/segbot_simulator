@@ -2,10 +2,15 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(segbot_gazebo_plugins)
 
-find_package(catkin REQUIRED COMPONENTS roscpp gazebo_ros image_transport cv_bridge message_generation)
-find_package(Boost REQUIRED COMPONENTS thread)
+find_package(catkin REQUIRED COMPONENTS 
+  cv_bridge 
+  gazebo_ros 
+  image_transport 
+  message_generation
+  roscpp 
+  )
 
-# Start custom Gazebo CMake stuff
+find_package(Boost REQUIRED COMPONENTS thread)
 find_package(GAZEBO REQUIRED)
 find_package(SDF REQUIRED)
 
@@ -18,24 +23,15 @@ endfunction()
 JOIN("${GAZEBO_LDFLAGS}" " " LD_FLAGS)
 
 #message(STATUS "GAZEBO_LDFLAGS: ${GAZEBO_LDFLAGS}")
-message(STATUS "LD_FLAGS: ${LD_FLAGS}")
+message(STATUS "segbot_gazebo_plugins: using LD_FLAGS = \"${LD_FLAGS}\"")
 
 find_package(PkgConfig)
 pkg_check_modules(OGRE OGRE)
 
-#execute_process(COMMAND
-#  pkg-config --variable=plugindir OGRE
-#  OUTPUT_VARIABLE OGRE_PLUGIN_PATH
-
-#OUTPUT_STRIP_TRAILING_WHITESPACE
-#)
-
-# End custom gazebo cmake stuff
-
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS} 
   ${OGRE_INCLUDE_DIRS}
   ${SDFormat_INCLUDE_DIRS}
@@ -51,44 +47,43 @@ generate_messages(
   std_msgs
 )
 
-add_library(object_controller_plugin src/object_controller_plugin.cc)
-add_dependencies(object_controller_plugin segbot_gazebo_plugins_gencpp)
-set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${LD_FLAGS}")
-target_link_libraries(object_controller_plugin 
-  ${catkin_LIBRARIES}
+add_library(gazebo_ros_video src/gazebo_ros_video.cc)
+set_target_properties(gazebo_ros_video PROPERTIES LINK_FLAGS "${LD_FLAGS}")
+target_link_libraries(gazebo_ros_video 
   ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES} 
   ${SDFormat_LIBRARIES}
 )
 
-add_library(gazebo_ros_video src/gazebo_ros_video.cc)
-set_target_properties(gazebo_ros_video PROPERTIES LINK_FLAGS "${LD_FLAGS}")
-target_link_libraries(gazebo_ros_video 
-  ${catkin_LIBRARIES}
+add_library(object_controller_plugin src/object_controller_plugin.cc)
+add_dependencies(object_controller_plugin segbot_gazebo_plugins_gencpp)
+set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${LD_FLAGS}")
+target_link_libraries(object_controller_plugin 
   ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES} 
   ${SDFormat_LIBRARIES}
 )
 
 catkin_package(
   CATKIN_DEPENDS 
-    roscpp
+    cv_bridge
     gazebo_ros 
     image_transport 
-    cv_bridge
     message_runtime
+    roscpp
   INCLUDE_DIRS 
     include
   LIBRARIES
-    object_controller_plugin
     gazebo_ros_video
+    object_controller_plugin
 )
 
 # Install targets
-
 install(TARGETS 
-  object_controller_plugin  
   gazebo_ros_video
+  object_controller_plugin  
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   )
 
