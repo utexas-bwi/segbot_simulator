@@ -17,17 +17,18 @@ function(JOIN VALUES GLUE OUTPUT)
 endfunction()
 JOIN("${GAZEBO_LDFLAGS}" " " LD_FLAGS)
 
-message(STATUS "GAZEBO_LDFLAGS: ${GAZEBO_LDFLAGS}")
+#message(STATUS "GAZEBO_LDFLAGS: ${GAZEBO_LDFLAGS}")
 message(STATUS "LD_FLAGS: ${LD_FLAGS}")
 
 find_package(PkgConfig)
 pkg_check_modules(OGRE OGRE)
 
-execute_process(COMMAND
-  pkg-config --variable=plugindir OGRE
-  OUTPUT_VARIABLE OGRE_PLUGIN_PATH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+#execute_process(COMMAND
+#  pkg-config --variable=plugindir OGRE
+#  OUTPUT_VARIABLE OGRE_PLUGIN_PATH
+
+#OUTPUT_STRIP_TRAILING_WHITESPACE
+#)
 
 # End custom gazebo cmake stuff
 
