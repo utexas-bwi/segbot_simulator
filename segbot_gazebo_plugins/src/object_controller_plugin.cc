@@ -64,7 +64,7 @@ namespace gazebo {
           this->modelNamespace.c_str());
     } else {
       this->modelNamespace = 
-        _sdf->GetElement("robotNamespace")->GetValueString();
+        _sdf->GetElement("robotNamespace")->Get<std::string>();
     }
 
     this->topicName = "cmd_vel";
@@ -72,7 +72,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing <topicName>, defaults to \"%s\"", 
           this->modelNamespace.c_str(), this->topicName.c_str());
     } else {
-      this->topicName = _sdf->GetElement("topicName")->GetValueString();
+      this->topicName = _sdf->GetElement("topicName")->Get<std::string>();
     }
 
     this->globalFrame = "/map";
@@ -80,7 +80,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing globalFrame, defaults to \"%s\"",
           this->modelNamespace.c_str(), this->globalFrame.c_str());
     } else {
-      this->globalFrame = _sdf->GetElement("globalFrame")->GetValueString();
+      this->globalFrame = _sdf->GetElement("globalFrame")->Get<std::string>();
     }
 
     this->updateRate = 100.0;
@@ -88,7 +88,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing <updateRate>, defaults to %f",
           this->modelNamespace.c_str(), this->updateRate);
     } else {
-      this->updateRate = _sdf->GetElement("updateRate")->GetValueDouble();
+      this->updateRate = _sdf->GetElement("updateRate")->Get<double>();
     }
 
     this->mapTopic = "map";
@@ -96,7 +96,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing <mapTopic>, defaults to \"%s\"",
           this->modelNamespace.c_str(), this->mapTopic.c_str());
     } else {
-      this->mapTopic = _sdf->GetElement("mapTopic")->GetValueString();
+      this->mapTopic = _sdf->GetElement("mapTopic")->Get<std::string>();
     }
 
     this->modelRadius = 0.5;
@@ -104,7 +104,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing <modelRadius>, defaults to %f",
           this->modelNamespace.c_str(), this->modelRadius);
     } else {
-      this->modelRadius = _sdf->GetElement("modelRadius")->GetValueDouble();
+      this->modelRadius = _sdf->GetElement("modelRadius")->Get<double>();
     }
 
     this->modelPadding = 0.05;
@@ -112,7 +112,7 @@ namespace gazebo {
       ROS_WARN("OCPlugin (%s) missing <modelPadding>, defaults to %f",
           this->modelNamespace.c_str(), this->modelPadding);
     } else {
-      this->modelPadding = _sdf->GetElement("modelPadding")->GetValueDouble();
+      this->modelPadding = _sdf->GetElement("modelPadding")->Get<double>();
     }
     this->circumscribed_model_distance_ = 
       this->modelPadding + this->modelRadius;

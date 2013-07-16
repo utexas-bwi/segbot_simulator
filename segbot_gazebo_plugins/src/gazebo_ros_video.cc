@@ -51,7 +51,7 @@ namespace gazebo {
           this->modelNamespace.c_str());
     } else {
       this->modelNamespace = 
-        _sdf->GetElement("robotNamespace")->GetValueString();
+        _sdf->GetElement("robotNamespace")->Get<std::string>();
     }
 
     this->topicName = "image_raw";
@@ -59,7 +59,7 @@ namespace gazebo {
       ROS_WARN("VideoPlugin (%s) missing <topicName>, defaults to \"%s\"",
           this->modelNamespace.c_str(), this->topicName.c_str());
     } else {
-      this->topicName = _sdf->GetElement("topicName")->GetValueString();
+      this->topicName = _sdf->GetElement("topicName")->Get<std::string>();
     }
 
     this->height = 240;
@@ -67,14 +67,7 @@ namespace gazebo {
       ROS_WARN("VideoPlugin (%s) missing <height>, defaults to %i",
           this->modelNamespace.c_str(), this->height);
     } else {
-      sdf::ParamPtr heightParam = _sdf->GetElement("height")->GetValue();
-      /* if (heightParam->IsInt()) { */
-        heightParam->Get(this->height);
-      // } else {
-      //   std::string heightStr;
-      //   heightParam->Get(heightStr);
-      //   this->height = boost::lexical_cast<int>(heightStr);
-      // }
+     this->height = _sdf->GetElement("height")->Get<int>();
     }
 
     this->width = 320;
@@ -82,14 +75,7 @@ namespace gazebo {
       ROS_WARN("VideoPlugin (%s) missing <width>, defaults to %i",
           this->modelNamespace.c_str(), this->height);
     } else {
-      sdf::ParamPtr widthParam = _sdf->GetElement("width")->GetValue();
-      //if (widthParam->IsInt()) {
-        widthParam->Get(this->width);
-      // } else {
-      //   std::string widthStr;
-      //   widthParam->Get(widthStr);
-      //   this->width = boost::lexical_cast<int>(widthStr);
-      // }
+     this->width = _sdf->GetElement("width")->Get<int>();
     }
 
     std::string _name = this->modelNamespace + "_visual";
