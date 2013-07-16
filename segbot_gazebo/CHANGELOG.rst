@@ -2,6 +2,10 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.2 (2013-07-16)
+------------------
+* cmake and package description cleanup and alphabetization
+
 0.1.1 (2013-07-15)
 ------------------
 

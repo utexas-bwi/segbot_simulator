@@ -2,6 +2,13 @@
 Changelog for package segbot_gazebo_plugins
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.2 (2013-07-16)
+------------------
+* cleaned up and alphabetized cmake infrastructure and package description
+* added missing gencpp dependency, ensuring build reliability
+* code cleanup + removal of redundant diff drive plugin (migrated to gazebo_plugins)
+* now works with gazebo prerelease 1.9.4 and SDF 1.4. This should hopefully allow a successful build on the buildfarm
+
 0.1.1 (2013-07-15)
 ------------------
 * closes `#4 <https://github.com/utexas-bwi/segbot_simulator/issues/4>`_. This was also causing a buildfarm failure
