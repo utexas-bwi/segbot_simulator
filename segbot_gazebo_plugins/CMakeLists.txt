@@ -7,6 +7,7 @@ find_package(Boost REQUIRED COMPONENTS thread)
 
 # Start custom Gazebo CMake stuff
 find_package(GAZEBO REQUIRED)
+find_package(SDF REQUIRED)
 
 # http://stackoverflow.com/questions/7172670/best-shortest-way-to-join-a-list-in-cmake
 function(JOIN VALUES GLUE OUTPUT)
@@ -36,6 +37,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   ${GAZEBO_INCLUDE_DIRS} 
   ${OGRE_INCLUDE_DIRS}
+  ${SDFormat_INCLUDE_DIRS}
 )
 
 add_service_files(
@@ -54,6 +56,7 @@ target_link_libraries(object_controller_plugin
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${GAZEBO_LIBRARIES} 
+  ${SDFormat_LIBRARIES}
 )
 
 add_library(gazebo_ros_video src/gazebo_ros_video.cc)
@@ -62,6 +65,7 @@ target_link_libraries(gazebo_ros_video
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
   ${GAZEBO_LIBRARIES} 
+  ${SDFormat_LIBRARIES}
 )
 
 catkin_package(

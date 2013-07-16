@@ -68,13 +68,13 @@ namespace gazebo {
           this->modelNamespace.c_str(), this->height);
     } else {
       sdf::ParamPtr heightParam = _sdf->GetElement("height")->GetValue();
-      if (heightParam->IsInt()) {
+      /* if (heightParam->IsInt()) { */
         heightParam->Get(this->height);
-      } else {
-        std::string heightStr;
-        heightParam->Get(heightStr);
-        this->height = boost::lexical_cast<int>(heightStr);
-      }
+      // } else {
+      //   std::string heightStr;
+      //   heightParam->Get(heightStr);
+      //   this->height = boost::lexical_cast<int>(heightStr);
+      // }
     }
 
     this->width = 320;
@@ -83,13 +83,13 @@ namespace gazebo {
           this->modelNamespace.c_str(), this->height);
     } else {
       sdf::ParamPtr widthParam = _sdf->GetElement("width")->GetValue();
-      if (widthParam->IsInt()) {
+      //if (widthParam->IsInt()) {
         widthParam->Get(this->width);
-      } else {
-        std::string widthStr;
-        widthParam->Get(widthStr);
-        this->width = boost::lexical_cast<int>(widthStr);
-      }
+      // } else {
+      //   std::string widthStr;
+      //   widthParam->Get(widthStr);
+      //   this->width = boost::lexical_cast<int>(widthStr);
+      // }
     }
 
     std::string _name = this->modelNamespace + "_visual";

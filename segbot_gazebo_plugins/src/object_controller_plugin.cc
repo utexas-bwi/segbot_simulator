@@ -29,7 +29,7 @@
 #include <segbot_gazebo_plugins/object_controller_plugin.h>
 
 #include <gazebo/math/gzmath.hh>
-#include <gazebo/sdf/sdf.hh>
+#include <sdf/sdf.hh>
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
