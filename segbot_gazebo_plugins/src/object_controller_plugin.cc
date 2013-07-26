@@ -156,29 +156,29 @@ namespace gazebo {
 
     sub_ = rosnode_->subscribe(so);
 
-    ROS_DEBUG("OCPlugin (%s) is subscribing to the map: %s", 
-        this->modelNamespace.c_str(), 
-        (rosnode_->resolveName(mapTopic)).c_str());
-    ros::SubscribeOptions so2 =
-      ros::SubscribeOptions::create<nav_msgs::OccupancyGrid>(mapTopic, 1,
-          boost::bind(&ObjectControllerPlugin::getSimpleMap, this, _1),
-          ros::VoidPtr(), &queue_);
-    sub2_ = rosnode_->subscribe(so2);
-    map_available_ = false;
+    // ROS_DEBUG("OCPlugin (%s) is subscribing to the map: %s", 
+    //     this->modelNamespace.c_str(), 
+    //     (rosnode_->resolveName(mapTopic)).c_str());
+    // ros::SubscribeOptions so2 =
+    //   ros::SubscribeOptions::create<nav_msgs::OccupancyGrid>(mapTopic, 1,
+    //       boost::bind(&ObjectControllerPlugin::getSimpleMap, this, _1),
+    //       ros::VoidPtr(), &queue_);
+    // sub2_ = rosnode_->subscribe(so2);
+    // map_available_ = false;
 
     pub_ = rosnode_->advertise<nav_msgs::Odometry>("odom", 1);
-    pub2_ = 
-      rosnode_->advertise<nav_msgs::OccupancyGrid>("expanded_map", 1, true);
+    // pub2_ = 
+    //   rosnode_->advertise<nav_msgs::OccupancyGrid>("expanded_map", 1, true);
 
-    ros::AdvertiseServiceOptions so3 = 
-      ros::AdvertiseServiceOptions::create<segbot_gazebo_plugins::UpdatePluginState>(
-          "update_state", 
-          boost::bind(&ObjectControllerPlugin::updateState, this, _1, _2), 
-          ros::VoidPtr(), &queue_
-          );
+    // ros::AdvertiseServiceOptions so3 = 
+    //   ros::AdvertiseServiceOptions::create<segbot_gazebo_plugins::UpdatePluginState>(
+    //       "update_state", 
+    //       boost::bind(&ObjectControllerPlugin::updateState, this, _1, _2), 
+    //       ros::VoidPtr(), &queue_
+    //       );
 
-    update_state_service_server_ = rosnode_->advertiseService(so3);
-    pause_ = false;
+    // update_state_service_server_ = rosnode_->advertiseService(so3);
+    // pause_ = false;
 
     // start custom queue for diff drive
     this->callback_queue_thread_ = 
@@ -186,30 +186,37 @@ namespace gazebo {
 
     // listen to the update event (broadcast every simulation iteration)
     this->updateConnection = 
-      event::Events::ConnectWorldUpdateStart(
+      event::Events::ConnectWorldUpdateBegin(
           boost::bind(&ObjectControllerPlugin::UpdateChild, this));
 
   }
 
   // Update the controller
   void ObjectControllerPlugin::UpdateChild() {
-    common::Time current_time = this->world->GetSimTime();
-    double seconds_since_last_update = 
-      (current_time - last_update_time_).Double();
-    if (seconds_since_last_update > update_period_) {
-      if (timeout_period_ != 0.0) {
-        if ((current_time - time_of_last_message_).Double() > timeout_period_) {
-          boost::mutex::scoped_lock scoped_lock(lock);
-          x_ = y_ = rot_ = 0;
-        }
-      }
-      boost::mutex::scoped_lock scoped_lock(state_lock_);
-      if (!pause_) {
-        writePositionData(seconds_since_last_update);
-      }
-      publishOdometry(seconds_since_last_update);
-      last_update_time_+= common::Time(update_period_);
-    }
+    // common::Time current_time = this->world->GetSimTime();
+    // double seconds_since_last_update = 
+    //   (current_time - last_update_time_).Double();
+    // if (seconds_since_last_update > update_period_) {
+    //   // if (timeout_period_ != 0.0) {
+    //   //   if ((current_time - time_of_last_message_).Double() > timeout_period_) {
+    //   //     boost::mutex::scoped_lock scoped_lock(lock);
+    //   //     x_ = y_ = rot_ = 0;
+    //   //   }
+    //   // }
+    //   boost::mutex::scoped_lock scoped_lock(state_lock_);
+    //   // if (!pause_) {
+    //   //   writePositionData(seconds_since_last_update);
+    //   // }
+    //   {
+    //     boost::mutex::scoped_lock scoped_lock(lock);
+    //     //this->parent->SetLinearAccel(math::Vector3(0, 0, 0));
+    //     //this->parent->SetAngularAccel(math::Vector3(0, 0, 0));
+    //   }
+    //   publishOdometry(seconds_since_last_update);
+    //   last_update_time_+= common::Time(update_period_);
+    // }
+    this->parent->SetLinearVel(math::Vector3(x_, y_, 0));
+    this->parent->SetAngularVel(math::Vector3(0, 0, rot_));
   }
 
   // Finalize the controller
