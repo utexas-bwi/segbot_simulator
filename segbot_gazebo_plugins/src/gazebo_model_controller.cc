@@ -93,11 +93,14 @@ namespace gazebo {
     rot_ = 0;
     alive_ = true;
 
-    // Initialize the ROS node and subscribe to cmd_vel
-    int argc = 0;
-    char** argv = NULL;
-    ros::init(argc, argv, "object_controller_plugin", 
-        ros::init_options::NoSigintHandler | ros::init_options::AnonymousName);
+    // Ensure that ROS has been initialized and subscribe to cmd_vel
+    if (!ros::isInitialized()) {
+      ROS_FATAL_STREAM("GazeboRosVideo Plugin (ns = " << robot_namespace_
+        << "). A ROS node for Gazebo has not been initialized, "
+        << "unable to load plugin. Load the Gazebo system plugin "
+        << "'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+      return;
+    }
     rosnode_.reset(new ros::NodeHandle(robot_namespace_));
 
     ROS_DEBUG("OCPlugin (%s) has started!", 
