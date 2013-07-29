@@ -56,10 +56,10 @@ generate_messages(
 ##   ${SDFormat_LIBRARIES}
 ## )
 
-add_library(object_controller_plugin src/object_controller_plugin.cc)
-add_dependencies(object_controller_plugin segbot_gazebo_plugins_gencpp)
-set_target_properties(object_controller_plugin PROPERTIES LINK_FLAGS "${LD_FLAGS}")
-target_link_libraries(object_controller_plugin 
+add_library(gazebo_model_controller src/gazebo_model_controller.cc)
+add_dependencies(gazebo_model_controller segbot_gazebo_plugins_gencpp)
+set_target_properties(gazebo_model_controller PROPERTIES LINK_FLAGS "${LD_FLAGS}")
+target_link_libraries(gazebo_model_controller 
   ${Boost_LIBRARIES}
   ${catkin_LIBRARIES}
   ${GAZEBO_LIBRARIES} 
@@ -77,13 +77,13 @@ catkin_package(
     include
   LIBRARIES
   #gazebo_ros_video
-    object_controller_plugin
+    gazebo_model_controller
 )
 
 # Install targets
 install(TARGETS 
   #gazebo_ros_video
-  object_controller_plugin  
+  gazebo_model_controller  
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   )
 
