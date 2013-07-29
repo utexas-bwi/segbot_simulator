@@ -3,12 +3,19 @@ cmake_minimum_required(VERSION 2.8.3)
 project(segbot_gazebo_plugins)
 
 find_package(catkin REQUIRED COMPONENTS 
-  cv_bridge 
   gazebo_ros 
-  image_transport 
-  message_generation
   roscpp 
   )
+
+catkin_package(
+  CATKIN_DEPENDS 
+    gazebo_ros 
+    roscpp
+  INCLUDE_DIRS 
+    include
+  LIBRARIES
+  # gazebo_ros_model_controller
+)
 
 find_package(Boost REQUIRED COMPONENTS thread)
 find_package(gazebo REQUIRED)
@@ -37,53 +44,19 @@ include_directories(
   ${SDFormat_INCLUDE_DIRS}
 )
 
-add_service_files(
-  FILES
-  UpdatePluginState.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-)
-
-## add_library(gazebo_ros_video src/gazebo_ros_video.cc)
-## set_target_properties(gazebo_ros_video PROPERTIES LINK_FLAGS "${LD_FLAGS}")
-## target_link_libraries(gazebo_ros_video 
+## add_library(gazebo_ros_model_controller src/gazebo_ros_model_controller.cpp)
+## add_dependencies(gazebo_ros_model_controller segbot_gazebo_plugins_gencpp)
+## set_target_properties(gazebo_ros_model_controller PROPERTIES LINK_FLAGS "${LD_FLAGS}")
+## target_link_libraries(gazebo_ros_model_controller 
 ##   ${Boost_LIBRARIES}
 ##   ${catkin_LIBRARIES}
 ##   ${GAZEBO_LIBRARIES} 
 ##   ${SDFormat_LIBRARIES}
 ## )
 
-add_library(gazebo_model_controller src/gazebo_model_controller.cc)
-add_dependencies(gazebo_model_controller segbot_gazebo_plugins_gencpp)
-set_target_properties(gazebo_model_controller PROPERTIES LINK_FLAGS "${LD_FLAGS}")
-target_link_libraries(gazebo_model_controller 
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  ${GAZEBO_LIBRARIES} 
-  ${SDFormat_LIBRARIES}
-)
-
-catkin_package(
-  CATKIN_DEPENDS 
-    cv_bridge
-    gazebo_ros 
-    image_transport 
-    message_runtime
-    roscpp
-  INCLUDE_DIRS 
-    include
-  LIBRARIES
-  #gazebo_ros_video
-    gazebo_model_controller
-)
-
 # Install targets
 install(TARGETS 
-  #gazebo_ros_video
-  gazebo_model_controller  
+  # gazeboi_ros_model_controller  
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   )
 
