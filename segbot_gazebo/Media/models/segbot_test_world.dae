@@ -948,13 +948,13 @@
     </library_effects>
     <library_images>
         <image id="ID25">
-            <init_from>bwi_test_world/Blinds_Vertical_Pattern_.jpg</init_from>
+            <init_from>segbot_test_world/Blinds_Vertical_Pattern_.jpg</init_from>
         </image>
         <image id="ID38">
-            <init_from>bwi_test_world/Wood_Bamboo_Medium_.jpg</init_from>
+            <init_from>segbot_test_world/Wood_Bamboo_Medium_.jpg</init_from>
         </image>
         <image id="ID59">
-            <init_from>bwi_test_world/Brick_Antique_.jpg</init_from>
+            <init_from>segbot_test_world/Brick_Antique_.jpg</init_from>
         </image>
     </library_images>
     <scene>

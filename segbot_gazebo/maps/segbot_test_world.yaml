@@ -1,4 +1,4 @@
-image: bwi_test_world.pgm
+image: segbot_test_world.pgm
 resolution: 0.025000
 origin: [-7.0, -7.0, 0.0]
 negate: 0

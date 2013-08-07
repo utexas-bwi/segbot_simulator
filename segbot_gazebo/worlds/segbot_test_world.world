@@ -88,7 +88,7 @@
         <collision name="geom_1">
           <geometry>
             <mesh>
-              <uri>bwi_test_world.dae</uri>
+              <uri>segbot_test_world.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -104,7 +104,7 @@
         <visual name="visual_1">
           <geometry>
             <mesh>
-              <uri>bwi_test_world.dae</uri>
+              <uri>segbot_test_world.dae</uri>
             </mesh>
           </geometry>
           <material>
