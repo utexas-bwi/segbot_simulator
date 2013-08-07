@@ -1,6 +1,6 @@
 <package>
   <name>segbot_gazebo_plugins</name>
-  <version>0.1.0</version>
+  <version>0.1.2</version>
   <description>bwi_gazebo_plugins</description>
 
   <license>BSD</license>
@@ -15,21 +15,28 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roscpp</build_depend>
-  <build_depend>image_transport</build_depend>
   <build_depend>cv_bridge</build_depend>
   <build_depend>gazebo</build_depend>
   <build_depend>gazebo_ros</build_depend>
-  <build_depend>gazebo_plugins</build_depend>
+  <build_depend>image_transport</build_depend>
   <build_depend>message_generation</build_depend>
+<<<<<<< HEAD
 
   <run_depend>roscpp</run_depend>
   <run_depend>image_transport</run_depend>
+=======
+  <build_depend>roscpp</build_depend>
+
+>>>>>>> stable
   <run_depend>cv_bridge</run_depend>
   <run_depend>gazebo</run_depend>
   <run_depend>gazebo_ros</run_depend>
-  <run_depend>gazebo_plugins</run_depend>
+  <run_depend>image_transport</run_depend>
   <run_depend>message_runtime</run_depend>
+<<<<<<< HEAD
+=======
+  <run_depend>roscpp</run_depend>
+>>>>>>> stable
 
   <export>
     <gazebo_ros plugin_path="${prefix}/lib"/>

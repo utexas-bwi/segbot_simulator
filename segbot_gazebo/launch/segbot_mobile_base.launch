@@ -10,7 +10,7 @@
   <arg name="tf_prefix" default="" />
   <arg name="has_tf_prefix" default="false" />
   <arg name="use_full_gazebo_model" default="true" />
-  <arg name="configuration_file" default="$(find segbot_bringup)/launch/includes/auxiliary.segbot_hokuyo.launch" />
+  <arg name="configuration_file" default="$(find segbot_bringup)/launch/includes/_auxiliary.segbot_hokuyo.xml" />
 
   <!-- whether to launch autonomous stuff or not -->
   <arg name="launch_localization" default="false" />
@@ -69,7 +69,7 @@
   <!-- launch move base -->
   <group if="$(arg launch_move_base)">
     <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
-      <arg name="map_topic" value="$(arg map_topic)" />
+      <!-- <arg name="map_topic" value="$(arg map_topic)" /> -->
     </include>
   </group>
 

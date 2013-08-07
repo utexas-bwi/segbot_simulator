@@ -1,10 +1,14 @@
 <launch>
 
+  <arg name="robot_configuration" default="$(find segbot_bringup)/launch/includes/_auxiliary.segbot_hokuyo.xml" />
+  
   <!-- launch the simulated world -->
   <include file="$(find segbot_gazebo)/launch/bwi_test_world.launch" />
 
   <!-- launch default robot configuration into the world -->
-  <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch" />
+  <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch">
+    <arg name="configuration_file" value="$(arg robot_configuration)" />
+  </include>
 
   <!-- launch the map server for the simulated world -->
   <include file="$(find segbot_gazebo)/launch/bwi_test_world_map_server.launch" />
