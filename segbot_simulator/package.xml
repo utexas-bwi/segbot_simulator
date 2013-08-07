@@ -16,7 +16,6 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>segbot_gazebo</run_depend>
-  <run_depend>segbot_gazebo_plugins</run_depend>
 
   <export>
     <metapackage/>

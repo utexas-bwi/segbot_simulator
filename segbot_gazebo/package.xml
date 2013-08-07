@@ -15,10 +15,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>segbot_bringup</run_depend>
   <run_depend>segbot_description</run_depend>
-  <run_depend>segbot_gazebo_plugins</run_depend>
   <run_depend>segbot_navigation</run_depend>
 
   <export>
