@@ -2,13 +2,12 @@
 
   <arg name="world" default="gazebo" />
   <arg name="map_frame" default="map" />
+  <arg name="map_service" default="/static_map" />
   <arg name="map_topic" default="/map" />
-  <arg name="map_namespace" default="" />
   <arg name="x" default="0" />
   <arg name="y" default="0" />
   <arg name="robotid" default="segbot" />
   <arg name="tf_prefix" default="" />
-  <arg name="has_tf_prefix" default="false" />
   <arg name="use_full_gazebo_model" default="true" />
   <arg name="configuration_file" default="$(find segbot_bringup)/launch/includes/_auxiliary.segbot_hokuyo.xml" />
 
@@ -16,9 +15,11 @@
   <arg name="launch_localization" default="false" />
   <arg name="use_fake_localization" default="false" />
   <arg name="launch_move_base" default="false" />
-  <arg name="launch_gmapping" default="false" />
 
-  <param if="$(arg has_tf_prefix)" name="tf_prefix" value="$(arg tf_prefix)" />
+  <!-- set tf prefix (used by gazebo plugins) -->
+  <param name="tf_prefix" value="$(arg tf_prefix)" />
+  <arg name="base_frame_id" default="$(arg tf_prefix)/base_footprint" />
+  <arg name="odom_frame_id" default="$(arg tf_prefix)/odom" />
 
   <!-- launch robot description and robot internal tf tree, along with any common nodes between h/w and software -->
   <include file="$(arg configuration_file)">
@@ -40,32 +41,25 @@
 
   <!-- launch localization -->
   <group if="$(arg launch_localization)">
-    <!-- <group if="$(arg has_tf_prefix)"> -->
-    <!--   <node name="map_tf_provider" pkg="tf" type="static_transform_publisher" -->
-    <!--     args="0 0 0 0 0 0 $(arg map_frame) $(arg tf_prefix)/$(arg map_frame) 200" />  -->
-    <!-- </group> -->
     <group unless="$(arg use_fake_localization)">
       <include file="$(find segbot_navigation)/launch/amcl.launch">
         <arg name="initial_pose_x" value="$(arg x)" />
         <arg name="initial_pose_y" value="$(arg y)" />
-        <arg name="map_namespace" value="$(arg map_namespace)" />
+        <arg name="map_service" value="$(arg map_service)" />
+        <arg name="map_topic" value="$(arg map_topic)" />
         <arg name="map_frame_id" value="$(arg map_frame)" />
-        <arg if="$(arg has_tf_prefix)" name="base_frame_id" value="$(arg tf_prefix)/base_footprint" />
-        <arg if="$(arg has_tf_prefix)" name="odom_frame_id" value="$(arg tf_prefix)/odom" />
-        <arg unless="$(arg has_tf_prefix)" name="base_frame_id" value="base_footprint" />
-        <arg unless="$(arg has_tf_prefix)" name="odom_frame_id" value="odom" />
+        <arg name="base_frame_id" value="$(arg base_frame_id)" />
+        <arg name="odom_frame_id" value="$(arg odom_frame_id)" />
       </include>
     </group>
     <group if="$(arg use_fake_localization)">
-      <node name="fake_amcl" pkg="bwi_gazebo" type="fake_amcl">
-        <param name="frame_id" value="$(arg map_frame)"/>
+      <node name="fake_localization" pkg="fake_localization" type="fake_localization">
+        <remap from="base_pose_ground_truth" to="odom"/>
+        <param name="global_frame_id" value="$(arg map_frame)" />
+        <param name="base_frame_id" value="$(arg base_frame_id)" />
+        <param name="odom_frame_id" value="$(arg odom_frame_id)" />
       </node>
     </group>
-  </group>
-
-  <!-- launch gmapping -->
-  <group if="$(arg launch_gmapping)">
-    <include file="$(find segbot_navigation)/launch/gmapping.launch" />
   </group>
 
   <!-- launch move base -->

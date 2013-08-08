@@ -14,10 +14,10 @@
       <arg name="configuration_file" value="$(arg robot_configuration)" />
       <arg name="x" value="0" />
       <arg name="y" value="0" />
-      <arg name="has_tf_prefix" value="true" />
       <arg name="tf_prefix" value="robot1" />
-      <arg name="launch_localization" default="true" />
-      <arg name="launch_move_base" default="true" />
+      <arg name="launch_localization" value="true" />
+      <arg name="launch_move_base" value="true" />
+      <!-- <arg name="use_fake_localization" default="true" /> -->
     </include>
   </group>
 
@@ -27,10 +27,10 @@
       <arg name="configuration_file" value="$(arg robot_configuration)" />
       <arg name="x" value="0" />
       <arg name="y" value="5.1" />
-      <arg name="has_tf_prefix" value="true" />
       <arg name="tf_prefix" value="robot2" />
-      <arg name="launch_localization" default="true" />
-      <arg name="launch_move_base" default="true" />
+      <arg name="launch_localization" value="true" />
+      <arg name="launch_move_base" value="true" />
+      <!-- <arg name="use_full_gazebo_model" value="false" /> -->
     </include>
   </group>
 

@@ -4,11 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Robot 1 - Path1
-        - /Robot 1 - Costmap1
-        - /Robot 2 - Path1
-        - /Robot 2 - Costmap1
-        - /Odometry1
+        - /Robot 2 - Odom1
       Splitter Ratio: 0.496795
     Tree Height: 673
   - Class: rviz/Selection
@@ -138,7 +134,7 @@ Visualization Manager:
       Enabled: true
       Keep: 1
       Length: 1
-      Name: Odometry
+      Name: Robot 2 - Odom
       Position Tolerance: 0.1
       Topic: /robot2/odom
       Value: true
@@ -156,22 +152,22 @@ Visualization Manager:
     - Class: rviz/SetInitialPose
       Topic: /robot1/initialpose
     - Class: rviz/SetGoal
-      Topic: /robot2/move_base_simple/goal
+      Topic: /robot1/move_base_simple/goal
   Value: true
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 30.4701
+      Distance: 42.8083
       Focal Point:
-        X: -1.62993
-        Y: 11.3291
-        Z: -8.00242
+        X: 0.457368
+        Y: 7.98437
+        Z: -9.0318
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.0948
+      Pitch: 1.2398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.58033
+      Yaw: 4.71033
     Saved: ~
 Window Geometry:
   Displays:
