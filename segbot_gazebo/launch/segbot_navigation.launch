@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="robot_configuration" default="$(find segbot_bringup)/launch/includes/_auxiliary.segbot_hokuyo.xml" />
+  <arg name="use_full_gazebo_model" default="true" />
   
   <!-- launch the simulated world -->
   <include file="$(find segbot_gazebo)/launch/segbot_test_world.launch" />
@@ -13,6 +14,7 @@
     <arg name="configuration_file" value="$(arg robot_configuration)" />
     <arg name="launch_localization" default="true" />
     <arg name="launch_move_base" default="true" />
+    <arg name="use_full_gazebo_model" value="$(arg use_full_gazebo_model)" />
   </include>
 
   <!-- launch localization manually - amcl -->
