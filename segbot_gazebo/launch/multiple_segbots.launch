@@ -10,11 +10,25 @@
 
   <group ns="robot1">
     <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch">
+      <arg name="robotid" value="robot1" />
+      <arg name="configuration_file" value="$(arg robot_configuration)" />
+      <arg name="x" value="0" />
+      <arg name="y" value="0" />
+      <arg name="has_tf_prefix" value="true" />
+      <arg name="tf_prefix" value="robot1" />
+      <arg name="launch_localization" default="true" />
+      <arg name="launch_move_base" default="true" />
+    </include>
+  </group>
+
+  <group ns="robot2">
+    <include file="$(find segbot_gazebo)/launch/segbot_mobile_base.launch">
+      <arg name="robotid" value="robot2" />
       <arg name="configuration_file" value="$(arg robot_configuration)" />
       <arg name="x" value="0" />
       <arg name="y" value="5.1" />
       <arg name="has_tf_prefix" value="true" />
-      <arg name="tf_prefix" value="robot1" />
+      <arg name="tf_prefix" value="robot2" />
       <arg name="launch_localization" default="true" />
       <arg name="launch_move_base" default="true" />
     </include>
