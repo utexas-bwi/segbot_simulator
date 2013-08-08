@@ -1,6 +1,7 @@
 <launch>
 
   <arg name="robot_configuration" default="$(find segbot_bringup)/launch/includes/_auxiliary.segbot_hokuyo.xml" />
+  <arg name="use_full_gazebo_model" default="true" />
   
   <!-- launch the simulated world -->
   <include file="$(find segbot_gazebo)/launch/segbot_test_world.launch" />
@@ -17,7 +18,7 @@
       <arg name="tf_prefix" value="robot1" />
       <arg name="launch_localization" value="true" />
       <arg name="launch_move_base" value="true" />
-      <!-- <arg name="use_fake_localization" default="true" /> -->
+      <arg name="use_full_gazebo_model" value="$(arg use_full_gazebo_model)" />
     </include>
   </group>
 
@@ -30,7 +31,7 @@
       <arg name="tf_prefix" value="robot2" />
       <arg name="launch_localization" value="true" />
       <arg name="launch_move_base" value="true" />
-      <!-- <arg name="use_full_gazebo_model" value="false" /> -->
+      <arg name="use_full_gazebo_model" value="$(arg use_full_gazebo_model)" />
     </include>
   </group>
 
