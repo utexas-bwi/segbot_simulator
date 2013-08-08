@@ -18,10 +18,7 @@
   <arg name="launch_move_base" default="false" />
   <arg name="launch_gmapping" default="false" />
 
-  <!-- enable tf_prefix if not in root level namespace -->
-  <group if="$(arg has_tf_prefix)">
-    <param name="tf_prefix" value="$(arg tf_prefix)" />
-  </group>
+  <param if="$(arg has_tf_prefix)" name="tf_prefix" value="$(arg tf_prefix)" />
 
   <!-- launch robot description and robot internal tf tree, along with any common nodes between h/w and software -->
   <include file="$(arg configuration_file)">
@@ -43,15 +40,20 @@
 
   <!-- launch localization -->
   <group if="$(arg launch_localization)">
-    <group if="$(arg has_tf_prefix)">
-      <node name="map_tf_provider" pkg="tf" type="static_transform_publisher"
-            args="0 0 0 0 0 0 /$(arg map_frame) $(arg map_frame) 200" /> 
-    </group>
+    <!-- <group if="$(arg has_tf_prefix)"> -->
+    <!--   <node name="map_tf_provider" pkg="tf" type="static_transform_publisher" -->
+    <!--     args="0 0 0 0 0 0 $(arg map_frame) $(arg tf_prefix)/$(arg map_frame) 200" />  -->
+    <!-- </group> -->
     <group unless="$(arg use_fake_localization)">
       <include file="$(find segbot_navigation)/launch/amcl.launch">
         <arg name="initial_pose_x" value="$(arg x)" />
         <arg name="initial_pose_y" value="$(arg y)" />
         <arg name="map_namespace" value="$(arg map_namespace)" />
+        <arg name="map_frame_id" value="$(arg map_frame)" />
+        <arg if="$(arg has_tf_prefix)" name="base_frame_id" value="$(arg tf_prefix)/base_footprint" />
+        <arg if="$(arg has_tf_prefix)" name="odom_frame_id" value="$(arg tf_prefix)/odom" />
+        <arg unless="$(arg has_tf_prefix)" name="base_frame_id" value="base_footprint" />
+        <arg unless="$(arg has_tf_prefix)" name="odom_frame_id" value="odom" />
       </include>
     </group>
     <group if="$(arg use_fake_localization)">
@@ -69,7 +71,7 @@
   <!-- launch move base -->
   <group if="$(arg launch_move_base)">
     <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
-      <!-- <arg name="map_topic" value="$(arg map_topic)" /> -->
+      <arg name="map_topic" value="$(arg map_topic)" />
     </include>
   </group>
 
