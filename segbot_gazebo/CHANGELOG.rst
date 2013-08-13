@@ -2,6 +2,10 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.4 (2013-08-13)
+------------------
+* reflected launch file location change for auxiliary segbot files
+
 0.1.3 (2013-08-12)
 ------------------
 * fixed markers and laserscan in the multiple segbot viz configuration
