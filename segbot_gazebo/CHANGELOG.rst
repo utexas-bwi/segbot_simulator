@@ -2,6 +2,19 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.4 (2013-08-13)
+------------------
+* reflected launch file location change for auxiliary segbot files
+
+0.1.3 (2013-08-12)
+------------------
+* fixed markers and laserscan in the multiple segbot viz configuration
+* finalized the multiple segbots script. made use_full_gazebo_model a parameter
+* cleaned up segbot_mobile_base (tf_prefix, fake_localization) - all tested using the multiple segbots launch file. closes `#8 <https://github.com/utexas-bwi/segbot_simulator/issues/8>`_. closes `#9 <https://github.com/utexas-bwi/segbot_simulator/issues/9>`_
+* updated single robot navigation script to use internal components of segbot_mobile_base
+* renamed bwi_test_world to segbot_test_world. closes `#10 <https://github.com/utexas-bwi/segbot_simulator/issues/10>`_
+* removed segbot_gazebo_plugins. closes `#7 <https://github.com/utexas-bwi/segbot_simulator/issues/7>`_
+
 0.1.2 (2013-07-16)
 ------------------
 * cmake and package description cleanup and alphabetization
