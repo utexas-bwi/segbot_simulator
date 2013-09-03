@@ -2,6 +2,10 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.5 (2013-09-03)
+------------------
+* mark config dir for installation. closes `#16 <https://github.com/utexas-bwi/segbot_simulator/issues/16>`_
+
 0.1.4 (2013-08-13)
 ------------------
 * reflected launch file location change for auxiliary segbot files
