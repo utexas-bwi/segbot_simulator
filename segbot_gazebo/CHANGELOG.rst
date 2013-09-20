@@ -2,6 +2,12 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.6 (forthcoming)
+-------------------
+* use ``roslaunch_add_file_check()`` to test launch file
+  dependencies.
+* add missing ``map_server`` dependency.
+
 0.1.5 (2013-09-03)
 ------------------
 * mark config dir for installation. closes `#16 <https://github.com/utexas-bwi/segbot_simulator/issues/16>`_
