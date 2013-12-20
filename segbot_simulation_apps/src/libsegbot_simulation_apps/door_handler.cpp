@@ -113,15 +113,27 @@ namespace segbot_simulation_apps {
     return retval;
   }
 
-  void DoorHandler::openDoor(int index) {
+  bool DoorHandler::openDoor(const std::string& door) {
+    size_t idx = resolveDoor(door);
+    if (idx == bwi_planning_common::NO_DOOR_IDX) {
+      return false;
+    }
+    return openDoor(idx); 
+  }
+
+  bool DoorHandler::openDoor(int index) {
+    if (index >= doors_.size()) {
+      return false;
+    }
     if (door_open_status_[index]) 
-      return;
+      return true;
     std::string prefix = "auto_door_";
     std::string model_name = prefix +
       boost::lexical_cast<std::string>(index);
     geometry_msgs::Pose pose = getDefaultLocation(true, index);
-    teleportEntity(model_name, pose);
+    bool success = teleportEntity(model_name, pose);
     door_open_status_[index] = true;
+    return success;
   }
 
   void DoorHandler::openAllDoors() {
@@ -130,16 +142,28 @@ namespace segbot_simulation_apps {
     }
   }
 
-  void DoorHandler::closeDoor(int index) {
+  bool DoorHandler::closeDoor(const std::string& door) {
+    size_t idx = resolveDoor(door);
+    if (idx == bwi_planning_common::NO_DOOR_IDX) {
+      return false;
+    }
+    return closeDoor(idx); 
+  }
+
+  bool DoorHandler::closeDoor(int index) {
+    if (index >= doors_.size()) {
+      return false;
+    }
     if (!door_open_status_[index]) 
-      return;
+      return true;
     ROS_INFO_STREAM("Closing door " << index);
     std::string prefix = "auto_door_";
     std::string model_name = prefix +
       boost::lexical_cast<std::string>(index);
     geometry_msgs::Pose pose = getDoorLocation(index);
-    teleportEntity(model_name, pose);
+    bool success = teleportEntity(model_name, pose);
     door_open_status_[index] = false;
+    return success;
   }
 
   void DoorHandler::closeAllDoors() {
@@ -149,7 +173,19 @@ namespace segbot_simulation_apps {
     }
   }
 
+
+  bool DoorHandler::isDoorOpen(const std::string& door) {
+    size_t idx = resolveDoor(door);
+    if (idx == bwi_planning_common::NO_DOOR_IDX) {
+      return false;
+    }
+    return isDoorOpen(idx); 
+  }
+
   bool DoorHandler::isDoorOpen(int index) {
+    if (index >= doors_.size()) {
+      return false;
+    }
     return door_open_status_[index];
   }
 
@@ -244,5 +280,16 @@ namespace segbot_simulation_apps {
 
     ROS_ERROR_STREAM("Unable to spawn: " << spawn.request.model_name);
   }      
+
+  size_t DoorHandler::resolveDoor(const std::string& door) {
+    
+    for (size_t i = 0; i < doors_.size(); ++i) {
+      if (doors_[i].name == door) {
+        return i;
+      }
+    }
+
+    return bwi_planning_common::NO_DOOR_IDX;
+  }
 
 }

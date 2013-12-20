@@ -19,10 +19,13 @@ namespace segbot_simulation_apps {
       float getDoorWidth(int index);
       geometry_msgs::Pose getDoorLocation(int index);
 
-      void openDoor(int index);
+      bool openDoor(const std::string& door);
+      bool openDoor(int index);
       void openAllDoors();
-      void closeDoor(int index);
+      bool closeDoor(const std::string& door);
+      bool closeDoor(int index);
       void closeAllDoors();
+      bool isDoorOpen(const std::string& door);
       bool isDoorOpen(int index);
 
       void closeAllDoorsFarAwayFromPoint(
@@ -36,6 +39,8 @@ namespace segbot_simulation_apps {
       void spawnObject(bool is_door, int index = 0);      
 
     private:
+
+      size_t resolveDoor(const std::string& door);
 
       std::vector<bwi_planning_common::Door> doors_;
       std::vector<std::string> locations_;
