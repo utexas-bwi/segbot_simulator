@@ -40,8 +40,6 @@ namespace segbot_simulation_apps {
 
     private:
 
-      size_t resolveDoor(const std::string& door);
-
       std::vector<bwi_planning_common::Door> doors_;
       std::vector<std::string> locations_;
       std::vector<int32_t> location_map_;

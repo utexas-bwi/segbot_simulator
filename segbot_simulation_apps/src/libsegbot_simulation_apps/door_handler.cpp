@@ -114,7 +114,7 @@ namespace segbot_simulation_apps {
   }
 
   bool DoorHandler::openDoor(const std::string& door) {
-    size_t idx = resolveDoor(door);
+    size_t idx = bwi_planning_common::resolveDoor(door, doors_);
     if (idx == bwi_planning_common::NO_DOOR_IDX) {
       return false;
     }
@@ -143,7 +143,7 @@ namespace segbot_simulation_apps {
   }
 
   bool DoorHandler::closeDoor(const std::string& door) {
-    size_t idx = resolveDoor(door);
+    size_t idx = bwi_planning_common::resolveDoor(door, doors_);
     if (idx == bwi_planning_common::NO_DOOR_IDX) {
       return false;
     }
@@ -175,7 +175,7 @@ namespace segbot_simulation_apps {
 
 
   bool DoorHandler::isDoorOpen(const std::string& door) {
-    size_t idx = resolveDoor(door);
+    size_t idx = bwi_planning_common::resolveDoor(door, doors_);
     if (idx == bwi_planning_common::NO_DOOR_IDX) {
       return false;
     }
@@ -281,15 +281,5 @@ namespace segbot_simulation_apps {
     ROS_ERROR_STREAM("Unable to spawn: " << spawn.request.model_name);
   }      
 
-  size_t DoorHandler::resolveDoor(const std::string& door) {
-    
-    for (size_t i = 0; i < doors_.size(); ++i) {
-      if (doors_[i].name == door) {
-        return i;
-      }
-    }
-
-    return bwi_planning_common::NO_DOOR_IDX;
-  }
 
 }
