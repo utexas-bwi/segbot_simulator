@@ -72,3 +72,8 @@ install(DIRECTORY
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
  
+# Install runtime launch and configuration files
+foreach(dir launch urdf)
+  install(DIRECTORY ${dir}/ 
+    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+endforeach(dir)
