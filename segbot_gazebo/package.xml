@@ -17,6 +17,7 @@
 
   <build_depend>roslaunch</build_depend> <!-- only for testing -->
 
+  <run_depend>fake_localization</run_depend>
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>map_server</run_depend>
