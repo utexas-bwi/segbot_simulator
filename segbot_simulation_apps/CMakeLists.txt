@@ -22,7 +22,7 @@ generate_messages(
 )
 catkin_package(
   DEPENDS
-    boost
+    Boost
   CATKIN_DEPENDS
     bwi_planning_common
     bwi_tools
@@ -34,10 +34,8 @@ catkin_package(
     tf
   INCLUDE_DIRS
     include
-    ${Boost_INCLUDE_DIRS}
   LIBRARIES
     ${PROJECT_NAME}
-    ${Boost_LIBRARIES}
 )
 
 include_directories(

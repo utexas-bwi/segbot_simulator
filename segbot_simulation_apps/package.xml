@@ -3,7 +3,7 @@
   <name>segbot_simulation_apps</name>
   <version>0.0.0</version>
   <description>
-    This package provides applications designed specifically to be used in a
+    Applications designed specifically to be used in a
     simulation environment, such as opening and closing doors inside the
     building simulation.
   </description>
