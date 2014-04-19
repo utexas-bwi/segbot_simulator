@@ -66,7 +66,7 @@ install(TARGETS ${PROJECT_NAME} door_handler
 )
 
 install(DIRECTORY
-  include/${PROJECT_NAME}
+  include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
  
