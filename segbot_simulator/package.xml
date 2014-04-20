@@ -1,6 +1,6 @@
 <package>
   <name>segbot_simulator</name>
-  <version>0.1.5</version>
+  <version>0.2.0</version>
   <description>
     ROS metapackage containing simulation components for the Segway
     RMP 50 based research robots at the University of Texas at Austin.
