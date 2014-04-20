@@ -2,8 +2,8 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-0.1.6 (forthcoming)
--------------------
+0.2.0 (2014-04-20)
+------------------
 * use ``roslaunch_add_file_check()`` to test launch file
   dependencies.
 * add missing ``map_server`` dependency.

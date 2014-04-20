@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package>
   <name>segbot_simulation_apps</name>
-  <version>0.0.0</version>
+  <version>0.1.5</version>
   <description>
-    Applications designed specifically to be used in a
-    simulation environment, such as opening and closing doors inside the
-    building simulation.
+    Applications designed specifically to be used in a simulation
+    environment, such as opening and closing doors inside the building
+    simulation.
   </description>
 
   <maintainer email="piyushk@gmail.com">Piyush Khandelwal</maintainer>
@@ -40,5 +40,8 @@
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
+
+  <!-- test dependencies -->
+  <build_depend>roslaunch</build_depend>
 
 </package>

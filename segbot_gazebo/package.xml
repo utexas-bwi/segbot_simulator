@@ -15,15 +15,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>roslaunch</build_depend> <!-- only for testing -->
-
   <run_depend>fake_localization</run_depend>
   <run_depend>gazebo_plugins</run_depend>
   <run_depend>gazebo_ros</run_depend>
   <run_depend>map_server</run_depend>
+  <run_depend>rviz</run_depend>
   <run_depend>segbot_bringup</run_depend>
   <run_depend>segbot_description</run_depend>
   <run_depend>segbot_navigation</run_depend>
+
+  <!-- test dependencies -->
+  <build_depend>roslaunch</build_depend>
 
   <export>
     <gazebo_ros gazebo_media_path="${prefix}"/>
