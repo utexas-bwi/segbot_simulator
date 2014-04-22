@@ -19,6 +19,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <run_depend>segbot_gazebo</run_depend>
+  <run_depend>segbot_simulation_apps</run_depend>
 
   <export>
     <metapackage/>
