@@ -2,6 +2,9 @@
 Changelog for package segbot_simulation_apps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.1 (2014-04-22)
+------------------
+
 0.2.0 (2014-04-20)
 ------------------
 * initial release to Hydro
