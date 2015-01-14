@@ -1,5 +1,6 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/regex.hpp>
+#include <bwi_planning_common/utils.h>
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <gazebo_msgs/SpawnModel.h>
@@ -16,9 +17,9 @@ namespace segbot_simulation_apps {
     ros::NodeHandle nh, private_nh("~");
 
     std::vector<std::string> unavailable_parameters;
-    std::string door_file;
-    if (!(private_nh.getParam("door_file", door_file))) {
-      unavailable_parameters.push_back("door_file");
+    std::string data_directory;
+    if (!(private_nh.getParam("data_directory", data_directory))) {
+      unavailable_parameters.push_back("data_directory");
     }
     if (!(private_nh.getParam("obstacle_urdf", obstacle_urdf_))) {
       unavailable_parameters.push_back("obstacle_urdf");
@@ -34,6 +35,7 @@ namespace segbot_simulation_apps {
       throw std::runtime_error(message);
     }
 
+    std::string door_file = bwi_planning_common::getDoorsFileLocationFromDataDirectory(data_directory);
     readDoorFile(door_file, doors_);
 
     get_gazebo_model_client_ =
