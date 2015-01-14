@@ -91,17 +91,14 @@ namespace segbot_simulation_apps {
   }
 
   float DoorHandler::getDoorWidth(int index) {
-    return (0.75f/0.9f) * doors_[index].width;
+    return 0.75f * doors_[index].width;
   }
 
   geometry_msgs::Pose DoorHandler::getDoorLocation(int index) {
     geometry_msgs::Pose retval;
 
-    bwi::Point2f door_center = 0.5 *
-      (doors_[index].approach_points[0] +
-       doors_[index].approach_points[1]);
-    retval.position.x = door_center.x;
-    retval.position.y = door_center.y;
+    retval.position.x = doors_[index].door_center.x;
+    retval.position.y = doors_[index].door_center.y;
     retval.position.z = 0;
 
     bwi::Point2f diff = 
