@@ -4,6 +4,7 @@
   <arg name="map_frame" default="map" />
   <arg name="map_service" default="/static_map" />
   <arg name="map_topic" default="/map" />
+  <arg name="navigation_map_topic" default="$(arg map_topic)" />
   <arg name="x" default="0" />
   <arg name="y" default="0" />
   <arg name="z" default="0" />
@@ -58,6 +59,11 @@
         <arg name="map_frame_id" value="$(arg map_frame)" />
         <arg name="base_frame_id" value="$(arg base_frame_id)" />
         <arg name="odom_frame_id" value="$(arg odom_frame_id)" />
+        <arg name="odom_alpha1" value="0.05" />
+        <arg name="odom_alpha2" value="0.05" />
+        <arg name="odom_alpha3" value="0.05" />
+        <arg name="odom_alpha4" value="0.05" />
+        <arg name="odom_alpha5" value="0.05" />
       </include>
     </group>
     <group if="$(arg use_fake_localization)">
@@ -74,7 +80,7 @@
   <group if="$(arg launch_move_base)">
     <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
       <arg name="move_base_server" value="$(arg move_base_server)" />
-      <arg name="map_topic" value="$(arg map_topic)" />
+      <arg name="map_topic" value="$(arg navigation_map_topic)" />
     </include>
   </group>
 
