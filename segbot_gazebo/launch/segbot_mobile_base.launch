@@ -81,6 +81,8 @@
     <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
       <arg name="move_base_server" value="$(arg move_base_server)" />
       <arg name="map_topic" value="$(arg navigation_map_topic)" />
+      <arg name="eband_rotational_threshold_multiplier" value="1.5" />
+      <arg name="eband_disallow_hysteresis" value="true" />
     </include>
   </group>
 
