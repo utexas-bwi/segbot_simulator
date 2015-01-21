@@ -26,6 +26,7 @@
   <param name="tf_prefix" value="$(arg tf_prefix)" />
   <arg name="base_frame_id" default="$(arg tf_prefix)/base_footprint" />
   <arg name="odom_frame_id" default="$(arg tf_prefix)/odom" />
+  <arg name="map_frame_with_prefix" default="$(arg tf_prefix)/$(arg map_frame)" />
 
   <!-- launch robot description and robot internal tf tree, along with any common nodes between h/w and software -->
   <include file="$(arg configuration_file)">
@@ -56,7 +57,7 @@
         <arg name="initial_pose_y" value="$(arg y)" />
         <arg name="map_service" value="$(arg map_service)" />
         <arg name="map_topic" value="$(arg map_topic)" />
-        <arg name="map_frame_id" value="$(arg map_frame)" />
+        <arg name="map_frame_id" value="$(arg map_frame_with_prefix)" />
         <arg name="base_frame_id" value="$(arg base_frame_id)" />
         <arg name="odom_frame_id" value="$(arg odom_frame_id)" />
         <arg name="odom_alpha1" value="0.05" />
@@ -69,7 +70,7 @@
     <group if="$(arg use_fake_localization)">
       <node name="fake_localization" pkg="fake_localization" type="fake_localization">
         <remap from="base_pose_ground_truth" to="odom"/>
-        <param name="global_frame_id" value="$(arg map_frame)" />
+        <param name="global_frame_id" value="$(arg map_frame_with_prefix)" />
         <param name="base_frame_id" value="$(arg base_frame_id)" />
         <param name="odom_frame_id" value="$(arg odom_frame_id)" />
       </node>
@@ -79,6 +80,7 @@
   <!-- launch move base -->
   <group if="$(arg launch_move_base)">
     <include file="$(find segbot_navigation)/launch/move_base_eband.launch">
+      <arg name="global_frame" value="$(arg map_frame)" />
       <arg name="move_base_server" value="$(arg move_base_server)" />
       <arg name="map_topic" value="$(arg navigation_map_topic)" />
       <arg name="eband_rotational_threshold_multiplier" value="1.5" />
