@@ -55,6 +55,7 @@
       <include file="$(find segbot_navigation)/launch/amcl.launch">
         <arg name="initial_pose_x" value="$(arg x)" />
         <arg name="initial_pose_y" value="$(arg y)" />
+        <arg name="initial_pose_a" value="$(arg yaw)" />
         <arg name="map_service" value="$(arg map_service)" />
         <arg name="map_topic" value="$(arg map_topic)" />
         <arg name="map_frame_id" value="$(arg map_frame_with_prefix)" />
