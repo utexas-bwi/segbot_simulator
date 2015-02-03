@@ -1,6 +1,8 @@
 #include <boost/algorithm/string/join.hpp>
+#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <bwi_planning_common/utils.h>
+#include <bwi_tools/resource_resolver.h>
 #include <gazebo_msgs/GetModelState.h>
 #include <gazebo_msgs/SetModelState.h>
 #include <gazebo_msgs/SpawnModel.h>
@@ -17,10 +19,6 @@ namespace segbot_simulation_apps {
     ros::NodeHandle nh, private_nh("~");
 
     std::vector<std::string> unavailable_parameters;
-    std::string data_directory;
-    if (!(private_nh.getParam("data_directory", data_directory))) {
-      unavailable_parameters.push_back("data_directory");
-    }
     if (!(private_nh.getParam("obstacle_urdf", obstacle_urdf_))) {
       unavailable_parameters.push_back("obstacle_urdf");
     }
@@ -34,9 +32,6 @@ namespace segbot_simulation_apps {
       ROS_INFO_STREAM(message);
       throw std::runtime_error(message);
     }
-
-    std::string door_file = bwi_planning_common::getDoorsFileLocationFromDataDirectory(data_directory);
-    readDoorFile(door_file, doors_);
 
     get_gazebo_model_client_ =
       nh.serviceClient<gazebo_msgs::GetModelState>(
@@ -60,11 +55,37 @@ namespace segbot_simulation_apps {
           "/gazebo/spawn_urdf_model");
     set_gazebo_model_client_.waitForExistence();
 
+    multimap_subscriber_ = nh.subscribe("map_metadata", 1, &DoorHandler::multimapHandler, this);
+
+    initialized_ = false;
+  }
+
+  void DoorHandler::initialize() {
+
     // Spawn all necessary doors
     door_open_status_.resize(doors_.size());
+    door_to_true_door_map_.resize(doors_.size());
     for (unsigned i = 0; i < doors_.size(); ++i) {
-      spawnObject(true, i);
-      door_open_status_[i] = false;
+      // Check if this door is too close to a previously spawned door (in which case they are probably the same door).
+      int parent_door = i; // i.e. no parent
+      for (unsigned j = 0; j < i; ++j) {
+        if (door_to_true_door_map_[j] != -1) {
+          // This is a true door. Get its location.
+          float diffx = doors_[j].door_center.x - doors_[i].door_center.x;
+          float diffy = doors_[j].door_center.y - doors_[i].door_center.y;
+          if (sqrtf(diffx*diffx + diffy*diffy) < 0.25f) {
+            parent_door = j;
+            break;
+          }
+        }
+      }
+
+      door_to_true_door_map_[i] = parent_door;
+      if (parent_door == i) {
+        // This is a new door. Yay!
+        spawnObject(true, i);
+        door_open_status_[i] = false;
+      }
     }
 
     // Don't use obstacles for now
@@ -73,7 +94,25 @@ namespace segbot_simulation_apps {
     // for (unsigned i = 0; i < 30; ++i) {
     //   spawnObject(false, i);
     // }
+    
+    initialized_ = true;
+  }
 
+  void DoorHandler::multimapHandler(const multi_level_map_msgs::MultiLevelMapData::ConstPtr& multimap) {
+
+    if (!initialized_) {
+      doors_.clear();
+      // Read in the objects for each level.
+      BOOST_FOREACH(const multi_level_map_msgs::LevelMetaData &level, multimap->levels) {
+        std::string resolved_data_directory = bwi_tools::resolveRosResource(level.data_directory);
+        std::string door_file = bwi_planning_common::getDoorsFileLocationFromDataDirectory(resolved_data_directory);
+        std::vector<bwi_planning_common::Door> level_doors;
+        readDoorFile(door_file, level_doors);
+        doors_.insert(doors_.end(), level_doors.begin(), level_doors.end());
+      }
+
+      initialize();
+    }
   }
 
   geometry_msgs::Pose DoorHandler::getDefaultLocation(bool is_door, int index) {
@@ -104,9 +143,9 @@ namespace segbot_simulation_apps {
     retval.position.z = 0;
 
     bwi::Point2f diff = 
-      (doors_[index].approach_points[0] -
-       doors_[index].approach_points[1]);
-    float door_yaw = atan2f(diff.y, diff.x);
+      (doors_[index].door_corners[0] -
+       doors_[index].door_corners[1]);
+    float door_yaw = atan2f(diff.y, diff.x) + M_PI / 2;
     retval.orientation = tf::createQuaternionMsgFromYaw(door_yaw);
 
     return retval;
@@ -124,6 +163,7 @@ namespace segbot_simulation_apps {
     if (index >= doors_.size()) {
       return false;
     }
+    index = door_to_true_door_map_[index];
     if (door_open_status_[index]) 
       return true;
     std::string prefix = "auto_door_";
@@ -153,6 +193,7 @@ namespace segbot_simulation_apps {
     if (index >= doors_.size()) {
       return false;
     }
+    index = door_to_true_door_map_[index];
     if (!door_open_status_[index]) 
       return true;
     ROS_INFO_STREAM("Closing door " << index);
@@ -185,27 +226,32 @@ namespace segbot_simulation_apps {
     if (index >= doors_.size()) {
       return false;
     }
+    index = door_to_true_door_map_[index];
     return door_open_status_[index];
   }
 
   void DoorHandler::closeAllDoorsFarAwayFromPoint(
       const geometry_msgs::Pose& point, float distance) {
     for (unsigned i = 0; i < doors_.size(); ++i) {
-      if (!door_open_status_[i])
+      if (door_to_true_door_map_[i] != i) {
+        // This isn't a true door. Don't worry about it.
         continue;
-      bool is_door_near = 
-        checkClosePoses(point, getDoorLocation(i), distance, false);
-      if (!is_door_near) 
+      }
+      if (!door_open_status_[i]) {
+        continue;
+      }
+      bool is_door_near = checkClosePoses(point, getDoorLocation(i), distance, false);
+      if (!is_door_near) {
         closeDoor(i);
+      }
     }
   }
 
-  bool DoorHandler::checkClosePoses(const geometry_msgs::Pose& p1,
-      const geometry_msgs::Pose& p2, float threshold,
-      bool check_yaw) {
-    float dist_diff = 
-      sqrtf(pow((p1.position.x - p2.position.x), 2) +
-          pow((p1.position.y - p2.position.y), 2));
+  bool DoorHandler::checkClosePoses(const geometry_msgs::Pose& p1, 
+                                    const geometry_msgs::Pose& p2, 
+                                    float threshold, 
+                                    bool check_yaw) {
+    float dist_diff = sqrtf(pow((p1.position.x - p2.position.x), 2) + pow((p1.position.y - p2.position.y), 2));
     if (dist_diff > threshold) {
       return false;
     }
@@ -279,6 +325,5 @@ namespace segbot_simulation_apps {
 
     ROS_ERROR_STREAM("Unable to spawn: " << spawn.request.model_name);
   }      
-
 
 }

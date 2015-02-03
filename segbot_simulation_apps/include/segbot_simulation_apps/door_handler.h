@@ -2,10 +2,10 @@
 #define SEGBOT_SIM_APPS_DOOR_HANDLER_H
 
 #include <boost/shared_ptr.hpp>
-#include <geometry_msgs/Pose.h>
-#include <ros/ros.h>
-
 #include <bwi_planning_common/structures.h>
+#include <geometry_msgs/Pose.h>
+#include <multi_level_map_msgs/MultiLevelMapData.h>
+#include <ros/ros.h>
 
 namespace segbot_simulation_apps {
 
@@ -40,11 +40,16 @@ namespace segbot_simulation_apps {
 
     private:
 
-      std::vector<bwi_planning_common::Door> doors_;
-      std::vector<std::string> locations_;
-      std::vector<int32_t> location_map_;
+      bool initialized_;
+      void initialize();
 
+      ros::Subscriber multimap_subscriber_;
+      void multimapHandler(const multi_level_map_msgs::MultiLevelMapData::ConstPtr& multimap);
+
+      std::vector<bwi_planning_common::Door> doors_;
       std::vector<bool> door_open_status_;
+      std::vector<int> door_to_true_door_map_;
+
       std::set<int> obstacles_in_use;
       std::set<int> unused_obstacles_;
       unsigned int num_obstacles_; // obstacles + doors

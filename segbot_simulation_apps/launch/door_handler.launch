@@ -1,16 +1,8 @@
 <launch>
 
-  <arg name="data_directory" default="." />
-
-  <node name="gazebo_door_handler" type="door_handler" 
-    pkg="segbot_simulation_apps" output="screen" required="true">
-
-    <param name="data_directory" value="$(arg data_directory)" />
-    <rosparam param="obstacle_urdf" command="load" 
-      file="$(find segbot_simulation_apps)/urdf/obstacle.urdf" />
-    <rosparam param="door_urdf" command="load" 
-      file="$(find segbot_simulation_apps)/urdf/door.urdf" />
-
+  <node name="gazebo_door_handler" type="door_handler" pkg="segbot_simulation_apps" output="screen" required="true">
+    <rosparam param="obstacle_urdf" command="load" file="$(find segbot_simulation_apps)/urdf/obstacle.urdf" />
+    <rosparam param="door_urdf" command="load" file="$(find segbot_simulation_apps)/urdf/door.urdf" />
   </node>
 
 </launch>
