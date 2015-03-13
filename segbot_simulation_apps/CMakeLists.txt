@@ -2,33 +2,26 @@ cmake_minimum_required(VERSION 2.8.3)
 project(segbot_simulation_apps)
 
 find_package(catkin REQUIRED COMPONENTS 
+  bwi_msgs
   bwi_planning_common
   bwi_tools
   gazebo_msgs
   geometry_msgs
-  message_generation
   roscpp
   std_msgs
   tf
 )
 find_package(Boost REQUIRED)
 
-add_service_files(
-  FILES
-  DoorHandlerInterface.srv
-)
-generate_messages(
-  DEPENDENCIES std_msgs
-)
 catkin_package(
   DEPENDS
     Boost
   CATKIN_DEPENDS
+    bwi_msgs
     bwi_planning_common
     bwi_tools
     gazebo_msgs
     geometry_msgs
-    message_runtime
     roscpp
     std_msgs
     tf

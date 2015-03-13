@@ -1,12 +1,12 @@
 #include <ros/ros.h>
 
+#include <bwi_msgs/DoorHandlerInterface.h>
 #include <segbot_simulation_apps/door_handler.h>
-#include <segbot_simulation_apps/DoorHandlerInterface.h>
 
 boost::shared_ptr<segbot_simulation_apps::DoorHandler> gh_;
 
-bool execute(segbot_simulation_apps::DoorHandlerInterface::Request  &req,
-             segbot_simulation_apps::DoorHandlerInterface::Response &res) {
+bool execute(bwi_msgs::DoorHandlerInterface::Request  &req,
+             bwi_msgs::DoorHandlerInterface::Response &res) {
 
   res.status = "";
   if (req.all_doors) {
