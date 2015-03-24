@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   bwi_tools
   gazebo_msgs
   geometry_msgs
+  multi_level_map_msgs
   roscpp
   std_msgs
   tf
@@ -22,6 +23,7 @@ catkin_package(
     bwi_tools
     gazebo_msgs
     geometry_msgs
+    multi_level_map_msgs
     roscpp
     std_msgs
     tf
