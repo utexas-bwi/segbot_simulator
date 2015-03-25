@@ -2,6 +2,9 @@
 Changelog for package segbot_simulator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.1 (2014-04-22)
 ------------------
 * segbot_simulator: add segbot_simulation_apps dependency (`#20

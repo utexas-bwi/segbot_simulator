@@ -2,6 +2,13 @@
 Changelog for package segbot_simulation_apps
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* added missing dependency on multi_level_map_msgs.
+* migrated DoorHandlerInterface from segbot_simulation_apps to bwi_msgs in the bwi_common repository.
+* updated door handler to use new multimap.
+* Contributors: Piyush Khandelwal
+
 0.2.1 (2014-04-22)
 ------------------
 

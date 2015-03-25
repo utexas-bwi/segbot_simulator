@@ -2,6 +2,14 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* use the updated segbot_v1 hokuyo only launch file as default.
+* now set yaw correctly for true localization as well
+* use different eband parameters in simulation.
+* allow changing the move base server.
+* Contributors: Piyush Khandelwal
+
 0.2.1 (2014-04-22)
 ------------------
 
