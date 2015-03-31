@@ -2,8 +2,8 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.1 (2015-03-31)
+------------------
 * updated setting amcl laser max range. see segbot_apps`#31 <https://github.com/utexas-bwi/segbot_simulator/issues/31>`_.
 * Contributors: Piyush Khandelwal
 
