@@ -2,6 +2,9 @@
 Changelog for package segbot_simulator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.3.0 (2015-03-24)
 ------------------
 

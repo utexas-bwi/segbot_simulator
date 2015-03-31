@@ -2,6 +2,11 @@
 Changelog for package segbot_gazebo
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* updated setting amcl laser max range. see segbot_apps`#31 <https://github.com/utexas-bwi/segbot_simulator/issues/31>`_.
+* Contributors: Piyush Khandelwal
+
 0.3.0 (2015-03-24)
 ------------------
 * use the updated segbot_v1 hokuyo only launch file as default.
