@@ -66,6 +66,7 @@
         <arg name="odom_alpha3" value="0.05" />
         <arg name="odom_alpha4" value="0.05" />
         <arg name="odom_alpha5" value="0.05" />
+        <arg name="laser_max_range" value="20.0" />
       </include>
     </group>
     <group if="$(arg use_fake_localization)">
